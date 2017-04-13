@@ -51,7 +51,7 @@ Most validation can be achieved by including one or more attributes on form fiel
    * `true` - Designates a *form* to always allow submission regardless of field validation
 
 
-#### CSS for added elements
+#### CSS for messages
 
 * `data-form-submit-error-for` and `data-form-submit-counter-for` properties are added automatically and can be used to style. If a field is missing an ID the field's name is used as the property's value.
 
