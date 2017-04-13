@@ -1,13 +1,17 @@
 <?php
-  require '../php/resource_management.php'; // Resource caching controls
-  $resources = new ResourceManager(__DIR__);
+function getTimeURI($path) {
+  # Append the file modified time to the script name to prevent using cached resources
+  #$timestamp = base_convert(filemtime(preg_replace('~/{2,}~', '/', join('/', [$_SERVER['DOCUMENT_ROOT'], $path]))), 10, 36);
+  $timestamp = base_convert(filemtime($path), 10, 36);
+  return "$path?$timestamp"; 
+}
 ?><!DOCTYPE html>
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-  <script src="<?php echo $resources->getTimeURI('form-submit/form-submit.js'); ?>"></script>
+  <script src="<?php echo getTimeURI('form-submit.js'); ?>"></script>
   <style type="text/css">
 form ~ form {
   margin-top: 1.5em;
@@ -15,7 +19,7 @@ form ~ form {
 fieldset > div {
   padding: 0.3em;
 }
-input, textarea {
+input[type="text"], textarea {
   display: block;
 }
 [data-form-submit-error-for], [data-form-submit-counter-for] {
@@ -133,7 +137,29 @@ input, textarea {
   </form>
   <form action="index.php" method="POST">
     <fieldset>
-      <legend>Form 5 - Fanciness</legend>
+      <legend>Form 5 - Radio buttons</legend>
+      <div>
+        Choose one:<br />
+        <input type="radio" name="sondheim" value="1" data-form-submit-required="radio" data-form-submit-error-msg="Please choose a Stephen Sondheim musical" /> West Side Story<br />
+        <input type="radio" name="sondheim" value="2" /> A Funny Thing Happened on the Way to the Forum<br />
+        <input type="radio" name="sondheim" value="3" /> Sweeney Todd<br />
+        <input type="radio" name="sondheim" value="4" /> Assassins
+      </div>
+      <div>
+        Choose one:<br />
+        <input type="radio" name="wavefunction" value="everett" data-form-submit-required="radio" data-form-submit-error-msg="Please choose a quantum mechanism interpretation" /> Many-worlds interpretation<br />
+        <input type="radio" name="wavefunction" value="bohr" /> Copenhagen interpretation<br />
+        <input type="radio" name="wavefunction" value="bohm" /> Bohm's interpretation
+      </div>
+      <button type="submit">
+        Submit
+      </button>
+      <input type="hidden" name="form_number" value="5" />
+    </fieldset>
+  </form>
+  <form action="index.php" method="POST">
+    <fieldset>
+      <legend>Form 6 - Fanciness</legend>
       <div>
         Enter a number less than 50:
         <input type="text" name="lessthan50" id="lessthan50" />
@@ -153,7 +179,7 @@ input, textarea {
       <button type="submit">
         Submit
       </button>
-      <input type="hidden" name="form_number" value="5" />
+      <input type="hidden" name="form_number" value="6" />
     </fieldset>
   </form>
   <script type="text/javascript">'use strict';

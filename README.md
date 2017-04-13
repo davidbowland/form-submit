@@ -1,5 +1,5 @@
 # form-submit
-Simple, powerful and extensible JavaScript form validation
+Simple, powerful and extensible JavaScript form validation (IE9+)
 
 ## HTML-driven
 Most validation can be achieved by including one or more attributes on form fields (input, select, textarea). Form submission is automatically prevented when any form does not pass validation.
@@ -28,6 +28,7 @@ Most validation can be achieved by including one or more attributes on form fiel
       *includes user assistance*
    * `time` - Field requires a time in the format `HH24:MM`  
       *includes user assistance*
+   * `radio` - Radio button group that requires a selection
 
 * `data-form-submit-error-msg`
    * `?` - Message to display when `data-form-submit-required` or `data-form-submit-regex` fails
@@ -68,9 +69,17 @@ Most validation can be achieved by including one or more attributes on form fiel
    ex: `formSubmit.removeValidation(document.getElementById('fnord'))`
    * Removes validation from an element (input, textarea, select).
 
+* `formSubmit.addRadioValidation(<element>, <callback(value, element)>)`  
+   ex: `formSubmit.addRadioValidation(document.getElementById('fnord'), function(value) { return value === undefined ? 'Please make a selection' : ''; })`
+   * Adds validation to a radio button group (grouped by name). The value passed to the callback is `undefined` if no value is selected.
+
+* `formSubmit.removeRadioValidation(<element>)`  
+   ex: `formSubmit.removeRadioValidation(document.getElementById('fnord'))`
+   * Removes validation from a radio button group (grouped by name).
+
 * `formSubmit.getErrorMessage(<element>)`  
    ex: `formSubmit.getErrorMessage(document.getElementById('fnord'))`
-   * Returns the element's error text if present or undefined if no validation is specified.
+   * Returns the element's error text if present or `undefined` if no validation is specified.
 
 * `formSubmit.isValid(<element>)`  
    ex: `formSubmit.isValid(document.getElementById('fnord'))`

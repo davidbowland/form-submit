@@ -12,17 +12,17 @@ var formSubmit = new function() {
         'mm': '(0[1-9]|1[0-2])',
         'd': '([12]\\d|3[01]|0?[1-9])',
         'dd': '(0[1-9]|[12]\\d|3[01])',
-        'yy': '\\d\\d',
-        'yyyy': '(19|20)\\d\\d',
+        'yy': '(\\d\\d)',
+        'yyyy': '((?:19|20)\\d\\d)',
         'H': '(1[0-2]|0?[1-9])',
         'HH': '(0[1-9]|1[0-2])',
         'H24': '(1\\d|2[0-3]|0?\\d)',
         'HH24': '(0\\d|1\\d|2[0-3])',
-        'M': '(0|[1-5])?\\d',
-        'MM': '[0-5]\\d',
-        'S': '(0|[1-5])?\\d',
-        'SS': '[0-5]\\d',
-        'MS': '\\d{1,6}?'
+        'M': '((?:0|[1-5])?\\d)',
+        'MM': '([0-5]\\d)',
+        'S': '((?:0|[1-5])?\\d)',
+        'SS': '([0-5]\\d)',
+        'MS': '(\\d{1,6})'
       },
       regex_phone_values = {
         '0': '\\d',
@@ -47,13 +47,38 @@ var formSubmit = new function() {
     return self;
   };
 
+  self.addRadioValidation = function(el, callback) {
+    var radio_buttons = el.form.querySelectorAll('[name="' + el.name + '"]');
+    for (var radio, x = 0; radio = radio_buttons[x]; x++) {
+      self.addValidation(radio, callback);
+    }
+    return self;
+  };
+
+  self.removeRadioValidation = function(el, callback) {
+    var radio_buttons = el.form.querySelectorAll('[name="' + el.name + '"]');
+    for (var radio, x = 0; radio = radio_buttons[x]; x++) {
+      self.removeValidation(radio, callback);
+    }
+    return self;
+  };
+
   self.getErrorMessage = function(el) {
     var callback = validation_callbacks[getUniqueID(el)],
-      value = el.value;
-    if (callback) {
-      if (el.tagName.toUpperCase() == 'SELECT') {
-        value = el.querySelector(':checked').value;
+      value = el.value,
+      radio_button;
+    // Only validate selected radio buttons
+    if (el.type.toLowerCase() == 'radio') {
+      if (radio_button = el.form.querySelector('[name="' + el.name + '"]:checked')) {
+        value = radio_button.value;
+      } else {
+        value = undefined;
       }
+    // Validated the selected item
+    } else if (el.tagName.toUpperCase() == 'SELECT') {
+      value = el.querySelector(':checked').value;
+    }
+    if (callback) {
       return callback(value, el); }
     return undefined;
   };
@@ -76,11 +101,12 @@ var formSubmit = new function() {
   };
 
   self.getErrorMessageElement = function(el) {
-    var target = document.querySelector('[data-form-submit-error-for="' + (el.id || el.name) + '"]');
+    var target = document.querySelector('[data-form-submit-error-for="' + (el.id || el.name) + '"]'),
+        radios, insert_before;
     // ** Search for sibling element with "errortext" class
     if (!target) {
       var sibling = el, classname;
-      while (!target && (sibling = sibling.nextSibling)) {
+      while (!target && (sibling = sibling.nextElementSibling)) {
         classname = sibling.className;
         if (classname && classname.split(' ').indexOf('errortext') >= 0) {
           target = sibling;
@@ -92,7 +118,13 @@ var formSubmit = new function() {
     if (!target) { // Create a span for this message
       target = document.createElement('span');
       target.setAttribute('data-form-submit-error-for', el.id || el.name);
-      el.parentElement.insertBefore(target, el.nextSibling);
+      if (el.type.toLowerCase() == 'radio') {
+        radios = el.form.querySelectorAll('[name="' + el.name + '"]')
+        insert_before = radios[radios.length - 1].nextElementSibling;
+      } else {
+        insert_before = el.nextElementSibling;
+      }
+      el.parentElement.insertBefore(target, insert_before);
     }
     return target;
   };
@@ -220,30 +252,41 @@ var formSubmit = new function() {
       format = format || 'mm/dd/yyyy HH:MM:SS.MS';
       if (!value) { // Can't format an empty string
         return ''; }
-      groups = getRegexFromString(format).exec(value);
-      // m/d/yy or yyyy
-      if (groups = value.match(/(?:^|\D)(1[0-2]|0?[1-9])([\\/-]?)([12]\d|3[01]|0?[1-9])(\2)((?:19|20)?\d\d)(?:\D|$)/)) {
-        replacements['m'] = groups[1];
-        replacements['d'] = groups[3];
-        replacements['yy'] = groups[5];
-      // yyyy-m-d
-      } else if (groups = value.match(/(?:^|\D)((?:19|20)?\d\d)([\\/-]?)(1[0-2]|0?[1-9])(\2)([12]\d|3[01]|0?[1-9])(?:\D|$)/)) {
-        replacements['yy'] = groups[1];
-        replacements['m'] = groups[3];
-        replacements['d'] = groups[5];
-      }
-      // h24:m:s.ms (date removed, if found)
-      if (groups && (groups = value.slice(groups[0].length).match(/(?:^|\D)(1\d|2[0-3]|0?\d)[\.:]?((?:0|[1-5])?\d)(?:[\.:]?((?:0|[1-5])?\d)(?:[\.:]?(\d{1,6}))?)?(?:\D|$)/))) {
-        replacements['H'] = groups[1];
-        replacements['M'] = groups[2];
-        replacements['S'] = groups[3];
-        replacements['MS'] = groups[4];
-      // h24:m:s.ms (date intact)
-      } else if (groups = value.match(/(?:^|\D)(1\d|2[0-3]|0?\d)[\.:]?((?:0|[1-5])?\d)(?:[\.:]?((?:0|[1-5])?\d)(?:[\.:]?(\d{1,6}))?)?(?:\D|$)/)) {
-        replacements['H'] = groups[1];
-        replacements['M'] = groups[2];
-        replacements['S'] = groups[3];
-        replacements['MS'] = groups[4];
+      // Format expected
+      if (groups = getRegexFromString(format.replace(/mm|dd|HH|MM|SS/g, function(item) { return item.slice(Math.min(item.length / -2)); }), true, true).exec(value)) {
+        tokens = format.match(/mm|m|dd|d|yyyy|yy|HH|H|MS|MM|M|SS|S/g);
+        groups.shift();
+        for (var m, x = 0; m = groups[x]; x++) {
+          if (['mm', 'dd', 'HH24', 'HH', 'MM', 'SS'].indexOf(tokens[x]) >= 0) {
+            m = ('00' + m).slice(-2);
+          }
+          replacements[tokens[x]] = m;
+        }
+      } else {
+        // m/d/yy or yyyy
+        if (groups = value.match(/(?:^|\D)(1[0-2]|0?[1-9])([\\/-]?)([12]\d|3[01]|0?[1-9])(\2)((?:19|20)?\d\d)(?:\D|$)/)) {
+          replacements['m'] = groups[1];
+          replacements['d'] = groups[3];
+          replacements['yy'] = groups[5];
+        // yyyy-m-d
+        } else if (groups = value.match(/(?:^|\D)((?:19|20)?\d\d)([\\/-]?)(1[0-2]|0?[1-9])(\2)([12]\d|3[01]|0?[1-9])(?:\D|$)/)) {
+          replacements['yy'] = groups[1];
+          replacements['m'] = groups[3];
+          replacements['d'] = groups[5];
+        }
+        // h24:m:s.ms (date removed, if found)
+        if (groups && (groups = value.slice(groups[0].length).match(/(?:^|\D)(1\d|2[0-3]|0?\d)[\.:]?((?:0|[1-5])?\d)(?:[\.:]?((?:0|[1-5])?\d)(?:[\.:]?(\d{1,6}))?)?(?:\D|$)/))) {
+          replacements['H'] = groups[1];
+          replacements['M'] = groups[2];
+          replacements['S'] = groups[3];
+          replacements['MS'] = groups[4];
+        // h24:m:s.ms (date intact)
+        } else if (groups = value.match(/(?:^|\D)(1\d|2[0-3]|0?\d)[\.:]?((?:0|[1-5])?\d)(?:[\.:]?((?:0|[1-5])?\d)(?:[\.:]?(\d{1,6}))?)?(?:\D|$)/)) {
+          replacements['H'] = groups[1];
+          replacements['M'] = groups[2];
+          replacements['S'] = groups[3];
+          replacements['MS'] = groups[4];
+        }
       }
       // Create multiple formats
       ['m', 'd', 'H', 'M', 'S'].forEach(function(item) {
@@ -295,10 +338,21 @@ var formSubmit = new function() {
       groups[0] = groups[0].replace(/\B(?=(?:\d{3})+\b)/g, ','); // Add commas before decimal
       return groups.join('');
     };
-    var getRegexFromString = function(str, general_separators) {
+    var getRegexFromString = function(str, general_separators, optional_values) {
+      var optional = '',
+          regex_end = '',
+          groups, replacement;
+      if (optional_values && (groups = str.match(/mm|m|dd|d|yyyy|yy|HH24|H24|HH|H|MS|MM|M|SS|S/g))) {
+        optional = '(?:';
+        for (var x = 0; groups[x]; x++) {
+          regex_end += ')?'; }
+      }
       return new RegExp('^' + str.replace(/mm|m|dd|d|yyyy|yy|HH24|H24|HH|H|MS|MM|M|SS|S|.+?/g, function(item) {
-        return regex_timestamp_values[item] || (general_separators ? '\\D?' : item.replace(/(\W)/g, '\\$1'));
-      }) + '$');
+        if (replacement = regex_timestamp_values[item]) {
+          return optional + replacement;
+        }
+        return general_separators ? '\\D?' : item.replace(/(\W)/g, '\\$1');
+      }) + regex_end + '$');
     };
   };
 
@@ -446,6 +500,17 @@ var formSubmit = new function() {
           case 'time':
             assisterValidateAndFormat(el, self.validation.isTime, self.validation.formatTime);
             assisterSetPlaceholder(el, 'hh:mm');
+            break;
+          case 'radio':
+            self.addRadioValidation(el, function(value, el) {
+              var msg_el;
+              // Return an error message only if no value is selected
+              if (value === undefined) {
+                msg_el = el.form.querySelector('[name="' + el.name + '"][data-form-submit-error-msg]')
+                return msg_el ? msg_el.getAttribute('data-form-submit-error-msg') : fallback_error_message;
+              }
+              return '';
+            });
             break;
           case 'false': // The only way to positively indicate no validation
             break;
