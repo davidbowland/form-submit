@@ -103,18 +103,6 @@ var formSubmit = new function() {
   self.getErrorMessageElement = function(el) {
     var target = document.querySelector('[data-form-submit-error-for="' + (el.id || el.name) + '"]'),
         radios, insert_before;
-    // ** Search for sibling element with "errortext" class
-    if (!target) {
-      var sibling = el, classname;
-      while (!target && (sibling = sibling.nextElementSibling)) {
-        classname = sibling.className;
-        if (classname && classname.split(' ').indexOf('errortext') >= 0) {
-          target = sibling;
-          target.setAttribute('data-form-submit-error-for', el.id || el.name);
-        }
-      }
-    }
-    // **
     if (!target) { // Create a span for this message
       target = document.createElement('span');
       target.setAttribute('data-form-submit-error-for', el.id || el.name);
