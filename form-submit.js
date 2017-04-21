@@ -3,11 +3,11 @@ https://github.com/davidbowland/form-submit */
 'use strict';
 var formSubmit = new function() {
   var self = this,
-      fallback_error_message = 'Invalid input', // Only used if nothing else is specified
-      validation_count = 0,
-      validation_callbacks = {},
-      validation_forms = {},
-      regex_timestamp_values = {
+      fallbackErrorMessage = 'Invalid input', // Only used if nothing else is specified
+      validationCount = 0,
+      validationCallbacks = {},
+      validationForms = {},
+      regexTimestampValues = {
         'm': '(1[0-2]|0?[1-9])',
         'mm': '(0[1-9]|1[0-2])',
         'd': '([12]\\d|3[01]|0?[1-9])',
@@ -24,7 +24,7 @@ var formSubmit = new function() {
         'SS': '([0-5]\\d)',
         'MS': '(\\d{1,6})'
       },
-      regex_phone_values = {
+      regexPhoneValues = {
         '0': '\\d',
         '9': '[1-9]'
       };
@@ -33,7 +33,7 @@ var formSubmit = new function() {
   /* Public methods */
   self.addValidation = function(el, callback) {
     self.removeValidation(el);
-    validation_callbacks[getUniqueID(el)] = callback;
+    validationCallbacks[getUniqueID(el)] = callback;
     el.addEventListener('change', fieldValidationEvent);
     addFormValidation(el.form);
     return self;
@@ -41,36 +41,36 @@ var formSubmit = new function() {
 
   self.removeValidation = function(el) {
     el.removeEventListener('change', fieldValidationEvent);
-    delete validation_callbacks[getUniqueID(el)];
+    delete validationCallbacks[getUniqueID(el)];
     removeFormValidation(el.form);
     self.removeErrorMessage(el);
     return self;
   };
 
   self.addRadioValidation = function(el, callback) {
-    var radio_buttons = el.form.querySelectorAll('[name="' + el.name + '"]');
-    for (var radio, x = 0; radio = radio_buttons[x]; x++) {
+    var radioButtons = el.form.querySelectorAll('[name="' + el.name + '"]');
+    for (var radio, x = 0; radio = radioButtons[x]; x++) {
       self.addValidation(radio, callback);
     }
     return self;
   };
 
   self.removeRadioValidation = function(el, callback) {
-    var radio_buttons = el.form.querySelectorAll('[name="' + el.name + '"]');
-    for (var radio, x = 0; radio = radio_buttons[x]; x++) {
+    var radioButtons = el.form.querySelectorAll('[name="' + el.name + '"]');
+    for (var radio, x = 0; radio = radioButtons[x]; x++) {
       self.removeValidation(radio, callback);
     }
     return self;
   };
 
   self.getErrorMessage = function(el) {
-    var callback = validation_callbacks[getUniqueID(el)],
+    var callback = validationCallbacks[getUniqueID(el)],
       value = el.value,
-      radio_button;
+      radioButton;
     // Only validate selected radio buttons
     if (el.type.toLowerCase() == 'radio') {
-      if (radio_button = el.form.querySelector('[name="' + el.name + '"]:checked')) {
-        value = radio_button.value;
+      if (radioButton = el.form.querySelector('[name="' + el.name + '"]:checked')) {
+        value = radioButton.value;
       } else {
         value = undefined;
       }
@@ -94,25 +94,25 @@ var formSubmit = new function() {
   };
 
   self.removeErrorMessage = function(el) {
-    var msg_el = self.getErrorMessageElement(el)
-    while (msg_el.firstChild) { // Remove current contents
-      msg_el.removeChild(msg_el.firstChild); }
+    var msgEl = self.getErrorMessageElement(el)
+    while (msgEl.firstChild) { // Remove current contents
+      msgEl.removeChild(msgEl.firstChild); }
     return self;
   };
 
   self.getErrorMessageElement = function(el) {
     var target = document.querySelector('[data-form-submit-error-for="' + (el.id || el.name) + '"]'),
-        radios, insert_before;
+        radios, insertBeforeElement;
     if (!target) { // Create a span for this message
       target = document.createElement('span');
       target.setAttribute('data-form-submit-error-for', el.id || el.name);
       if (el.type.toLowerCase() == 'radio') {
         radios = el.form.querySelectorAll('[name="' + el.name + '"]')
-        insert_before = radios[radios.length - 1].nextElementSibling;
+        insertBeforeElement = radios[radios.length - 1].nextElementSibling;
       } else {
-        insert_before = el.nextElementSibling;
+        insertBeforeElement = el.nextElementSibling;
       }
-      el.parentElement.insertBefore(target, insert_before);
+      el.parentElement.insertBefore(target, insertBeforeElement);
     }
     return target;
   };
@@ -154,8 +154,8 @@ var formSubmit = new function() {
 
   self.unload = function() {
     var el, x, counters = document.querySelectorAll('data-form-submit-count');
-    for (x in validation_callbacks) {
-      self.removeValidation(validation_callbacks[x]);
+    for (x in validationCallbacks) {
+      self.removeValidation(validationCallbacks[x]);
     }
     for (x = 0; el = counters[x]; x++) {
       self.removeCounter(el);
@@ -177,11 +177,11 @@ var formSubmit = new function() {
     vself.isCurrency = function(value) {
       return value.search(/^\-?((\d{1,3}(,?\d{3})*)?\.\d\d)$/) >= 0;
     };
-    vself.isPhone = function(value, format, general_separators) {
-      var regex_str = (format || '(000)000-0000').replace(/0|9|.+?/g, function(item) {
-        return regex_phone_values[item] || (general_separators ? '\\D*?' : item.replace(/(\W)/g, '\\$1'));
+    vself.isPhone = function(value, format, generalSeparators) {
+      var regexStr = (format || '(000)000-0000').replace(/0|9|.+?/g, function(item) {
+        return regexPhoneValues[item] || (generalSeparators ? '\\D*?' : item.replace(/(\W)/g, '\\$1'));
       });
-      return (new RegExp('^' + regex_str + '$')).test(value);
+      return (new RegExp('^' + regexStr + '$')).test(value);
     };
     vself.isZip = function(value) {
       return value.search(/^\d{5}$/) >= 0;
@@ -189,19 +189,19 @@ var formSubmit = new function() {
     vself.isEmail = function(value) {
       return value.search(/^.+@([a-z0-9]([a-z0-9-]*[a-z0-9])*\.)+[a-z]+$/i) >= 0;
     };
-    vself.isTimestamp = function(value, format, general_separators) {
-      return getRegexFromString(format || 'mm/dd/yyyy HH:MM:SS.MS', general_separators).test(value);
+    vself.isTimestamp = function(value, format, generalSeparators) {
+      return getRegexFromString(format || 'mm/dd/yyyy HH:MM:SS.MS', generalSeparators).test(value);
     };
-    vself.isDate = function(value, format, general_separators) {
-      return vself.isTimestamp(value, format || 'mm/dd/yyyy', general_separators);
+    vself.isDate = function(value, format, generalSeparators) {
+      return vself.isTimestamp(value, format || 'mm/dd/yyyy', generalSeparators);
     };
-    vself.isTime = function(value, format, general_separators) {
-      return vself.isTimestamp(value, format || 'HH24:MM', general_separators);
+    vself.isTime = function(value, format, generalSeparators) {
+      return vself.isTimestamp(value, format || 'HH24:MM', generalSeparators);
     };
 
     vself.formatDigits = function(value, format) {
       var digits = value.match(/\d/g) || [],
-          last_index;
+          lastIndex;
       // If no format was specified, return all digits. If no value, return empty string.
       if (format === undefined || !value) {
         return digits.join('');
@@ -210,11 +210,11 @@ var formSubmit = new function() {
       return format.replace(/\d/g, function(item, offset) {
         if (digits.length) {
           return digits.shift();
-        } else if (last_index === undefined) {
-          last_index = offset;
+        } else if (lastIndex === undefined) {
+          lastIndex = offset;
         }
         return '';
-      }).slice(0, last_index);
+      }).slice(0, lastIndex);
     };
     vself.formatNumber = function(value) {
       var pcount = 0,
@@ -236,7 +236,7 @@ var formSubmit = new function() {
     vself.formatTimestamp = function(value, format) {
       var groups, tokens,
           replacements = {},
-          last_index = undefined;
+          lastIndex = undefined;
       format = format || 'mm/dd/yyyy HH:MM:SS.MS';
       if (!value) { // Can't format an empty string
         return ''; }
@@ -308,11 +308,11 @@ var formSubmit = new function() {
       return format.replace(/mm|m|dd|d|yyyy|yy|HH24|H24|HH|H|MS|MM|M|SS|S/g, function(item, offset) {
         if (replacements[item]) {
           return replacements[item];
-        } else if (last_index === undefined) {
-          last_index = offset;
+        } else if (lastIndex === undefined) {
+          lastIndex = offset;
         }
         return '';
-      }).slice(0, last_index) || value; // Return original value if result is empty string
+      }).slice(0, lastIndex) || value; // Return original value if result is empty string
     };
     vself.formatDate = function(value, format) {
       return vself.formatTimestamp(value, format || 'mm/dd/yyyy');
@@ -321,26 +321,26 @@ var formSubmit = new function() {
       return vself.formatTimestamp(value, format || 'HH24:MM');
     };
 
-    var addCommas = function(num_str) {
-      var groups = num_str.match(/^([^\.]*)(\.?)([^\.]*)$/).slice(1);
+    var addCommas = function(numStr) {
+      var groups = numStr.match(/^([^\.]*)(\.?)([^\.]*)$/).slice(1);
       groups[0] = groups[0].replace(/\B(?=(?:\d{3})+\b)/g, ','); // Add commas before decimal
       return groups.join('');
     };
-    var getRegexFromString = function(str, general_separators, optional_values) {
+    var getRegexFromString = function(str, generalSeparators, optionalValues) {
       var optional = '',
-          regex_end = '',
+          regexEnd = '',
           groups, replacement;
-      if (optional_values && (groups = str.match(/mm|m|dd|d|yyyy|yy|HH24|H24|HH|H|MS|MM|M|SS|S/g))) {
+      if (optionalValues && (groups = str.match(/mm|m|dd|d|yyyy|yy|HH24|H24|HH|H|MS|MM|M|SS|S/g))) {
         optional = '(?:';
         for (var x = 0; groups[x]; x++) {
-          regex_end += ')?'; }
+          regexEnd += ')?'; }
       }
       return new RegExp('^' + str.replace(/mm|m|dd|d|yyyy|yy|HH24|H24|HH|H|MS|MM|M|SS|S|.+?/g, function(item) {
-        if (replacement = regex_timestamp_values[item]) {
+        if (replacement = regexTimestampValues[item]) {
           return optional + replacement;
         }
-        return general_separators ? '\\D?' : item.replace(/(\W)/g, '\\$1');
-      }) + regex_end + '$');
+        return generalSeparators ? '\\D?' : item.replace(/(\W)/g, '\\$1');
+      }) + regexEnd + '$');
     };
   };
 
@@ -352,8 +352,8 @@ var formSubmit = new function() {
   };
 
   var addFormValidation = function(form) {
-    if (!(form in validation_forms) && form) {
-      validation_forms[getUniqueID(form)] = true;
+    if (!(form in validationForms) && form) {
+      validationForms[getUniqueID(form)] = true;
       form.addEventListener('submit', formValidationEvent);
     }
   };
@@ -362,20 +362,20 @@ var formSubmit = new function() {
     var el, x;
     if (form) {
       // Only remove event listener if no more fields are being validated
-      for (var x in validation_callbacks) {
-        el = validation_callbacks[x];
+      for (var x in validationCallbacks) {
+        el = validationCallbacks[x];
         if (el.form == form) {
           return; } // This form still has a field being validated
       }
       form.removeEventListener('submit', formValidationEvent);
-      delete validation_forms[getUniqueID(form)];
+      delete validationForms[getUniqueID(form)];
     }
   };
 
   var getUniqueID = function(el) {
     var count = parseInt(el.getAttribute('data-form-submit-id'));
     if (isNaN(count)) {
-      el.setAttribute('data-form-submit-id', (count = validation_count++))
+      el.setAttribute('data-form-submit-id', (count = validationCount++))
     }
     return count;
   };
@@ -422,7 +422,7 @@ var formSubmit = new function() {
   };
 
   var assisterGetErrorMessage = function(el) {
-    return el.getAttribute('data-form-submit-error-msg') || fallback_error_message;
+    return el.getAttribute('data-form-submit-error-msg') || fallbackErrorMessage;
   };
 
   var assisterValidateAndFormat = function(target, validation, formatter, format) {
@@ -491,11 +491,11 @@ var formSubmit = new function() {
             break;
           case 'radio':
             self.addRadioValidation(el, function(value, el) {
-              var msg_el;
+              var msgEl;
               // Return an error message only if no value is selected
               if (value === undefined) {
-                msg_el = el.form.querySelector('[name="' + el.name + '"][data-form-submit-error-msg]')
-                return msg_el ? msg_el.getAttribute('data-form-submit-error-msg') : fallback_error_message;
+                msgEl = el.form.querySelector('[name="' + el.name + '"][data-form-submit-error-msg]')
+                return msgEl ? msgEl.getAttribute('data-form-submit-error-msg') : fallbackErrorMessage;
               }
               return '';
             });

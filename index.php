@@ -1,7 +1,6 @@
 <?php
 function getTimeURI($path) {
   # Append the file modified time to the script name to prevent using cached resources
-  #$timestamp = base_convert(filemtime(preg_replace('~/{2,}~', '/', join('/', [$_SERVER['DOCUMENT_ROOT'], $path]))), 10, 36);
   $timestamp = base_convert(filemtime($path), 10, 36);
   return "$path?$timestamp"; 
 }
