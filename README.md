@@ -128,7 +128,7 @@ Most validation can be achieved by including one or more attributes on form fiel
 
 * `formSubmit.validation.isPhone(<value>, [format], [generalSeparators])`  
    ex: `formSubmit.validation.isPhone('(123)456-7890')` or `formSubmit.validation.isPhone('123-456-7890', '900-900-0000')`
-   * Returns true if the value matches the phone format, otherwise returns false. Format string uses `0` for any digit and `9` for digits excluding zero. General separator should be true if non-digits in the format string should be ignored.
+   * Returns true if the value matches the phone format, otherwise returns false. Format string uses `0` for any digit and `9` for digits excluding zero. General separator argument should be true if non-digits in the format string should be ignored.
 
 * `formSubmit.validation.isZip(<value>)`  
    ex: `formSubmit.validation.isZip('90210')`
@@ -196,4 +196,4 @@ Most validation can be achieved by including one or more attributes on form fiel
 
 * `formSubmit.validation.formatTime(<value>, [format])`  
    ex: `formSubmit.validation.formatTime('08:20')` or `formSubmit.validation.formatTime('8:20', 'H:MM')`
-   * Returns the value formatted to pass `isTime`. Placeholders in the format string, when provided (default: 'HH24:MM'), are replaced by digits in the value until either is exhausted. See `isTimestamp` for a list of valid placeholders.
+   * Returns the value formatted to pass `isTime`. Placeholders in the format string, when provided (default: `HH24:MM`), are replaced by digits in the value until either is exhausted. See `isTimestamp` for a list of valid placeholders.
