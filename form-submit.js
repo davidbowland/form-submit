@@ -35,12 +35,14 @@ var formSubmit = new function() {
     self.removeValidation(el);
     validationCallbacks[getUniqueID(el)] = callback;
     el.addEventListener('change', fieldValidationEvent);
+    el.addEventListener('blur', fieldValidationEvent);
     addFormValidation(el.form);
     return self;
   };
 
   self.removeValidation = function(el) {
     el.removeEventListener('change', fieldValidationEvent);
+    el.removeEventListener('blur', fieldValidationEvent);
     delete validationCallbacks[getUniqueID(el)];
     removeFormValidation(el.form);
     self.removeErrorMessage(el);
@@ -128,6 +130,7 @@ var formSubmit = new function() {
     el.addEventListener('input', counterEvent);
     el.addEventListener('keypress', counterEvent);
     el.addEventListener('change', counterEvent);
+    el.addEventListener('blur', counterEvent);
     counterEvent({'target': el}); // Show count immediately
     return self;
   };
@@ -137,6 +140,7 @@ var formSubmit = new function() {
     el.removeEventListener('input', counterEvent);
     el.removeEventListener('keypress', counterEvent);
     el.removeEventListener('change', counterEvent);
+    el.removeEventListener('blur', counterEvent);
     while (counter.firstChild) {
       counter.removeChild(counter.firstChild); }
     return self;
