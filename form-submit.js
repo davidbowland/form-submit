@@ -103,7 +103,8 @@ var formSubmit = new function() {
   };
 
   self.getErrorMessageElement = function(el) {
-    var target = document.querySelector('[data-form-submit-error-for="' + (el.id || el.name) + '"]'),
+    var target = document.querySelector('[data-form-submit-error-for="' +
+                                        (el.id || el.name) + '"]'),
         radios, insertBeforeElement;
     if (!target) { // Create a span for this message
       target = document.createElement('span');
@@ -147,7 +148,8 @@ var formSubmit = new function() {
   };
 
   self.getCounterElement = function(el) {
-    var target = document.querySelector('[data-form-submit-counter-for="' + (el.id || el.name) + '"]');
+    var target = document.querySelector('[data-form-submit-counter-for="' +
+                                        (el.id || el.name) + '"]');
     if (!target) { // Create a span for this message
       target = document.createElement('span');
       target.setAttribute('data-form-submit-counter-for', el.id || el.name);
@@ -182,9 +184,11 @@ var formSubmit = new function() {
       return value.search(/^\-?((\d{1,3}(,?\d{3})*)?\.\d\d)$/) >= 0;
     };
     vself.isPhone = function(value, format, generalSeparators) {
-      var regexStr = (format || '(000)000-0000').replace(/0|9|.+?/g, function(item) {
-        return regexPhoneValues[item] || (generalSeparators ? '\\D*?' : item.replace(/(\W)/g, '\\$1'));
-      });
+      var regexStr = (format || '(000)000-0000').replace(/0|9|.+?/g,
+        function(item) {
+          return (regexPhoneValues[item] ||
+                 (generalSeparators ? '\\D*?' : item.replace(/(\W)/g, '\\$1')));
+        });
       return (new RegExp('^' + regexStr + '$')).test(value);
     };
     vself.isZip = function(value) {
@@ -194,10 +198,12 @@ var formSubmit = new function() {
       return value.search(/^.+@([a-z0-9]([a-z0-9-]*[a-z0-9])*\.)+[a-z]+$/i) >= 0;
     };
     vself.isTimestamp = function(value, format, generalSeparators) {
-      return getRegexFromString(format || 'mm/dd/yyyy HH:MM:SS.MS', generalSeparators).test(value);
+      return getRegexFromString(format || 'mm/dd/yyyy HH:MM:SS.MS',
+                                generalSeparators).test(value);
     };
     vself.isDate = function(value, format, generalSeparators) {
-      return vself.isTimestamp(value, format || 'mm/dd/yyyy', generalSeparators);
+      return vself.isTimestamp(value, format || 'mm/dd/yyyy',
+                               generalSeparators);
     };
     vself.isTime = function(value, format, generalSeparators) {
       return vself.isTimestamp(value, format || 'HH24:MM', generalSeparators);
@@ -224,7 +230,8 @@ var formSubmit = new function() {
       var pcount = 0,
           negative = value.indexOf('-') >= 0 ? '-' : '';
       return addCommas(negative + value.replace(/\D/g, function (match) {
-        return (match == '.' && ++pcount == 1) ? '.' : ''; // Allow the first period, all other non-digits are replaced
+        // Allow the first period, all other non-digits are replaced
+        return (match == '.' && ++pcount == 1) ? '.' : '';
       }));
     };
     vself.formatCurrency = function(value) {
@@ -245,7 +252,10 @@ var formSubmit = new function() {
       if (!value) { // Can't format an empty string
         return ''; }
       // Format expected
-      if (groups = getRegexFromString(format.replace(/mm|dd|HH|MM|SS/g, function(item) { return item.slice(Math.min(item.length / -2)); }), true, true).exec(value)) {
+      if (groups = getRegexFromString(format.replace(/mm|dd|HH|MM|SS/g,
+          function(item) { // Change double letters to single letters in regex
+            return item.slice(Math.min(item.length / -2));
+          }), true, true).exec(value)) {
         tokens = format.match(/mm|m|dd|d|yyyy|yy|HH|H|MS|MM|M|SS|S/g);
         groups.shift();
         for (var m, x = 0; m = groups[x]; x++) {
@@ -309,14 +319,15 @@ var formSubmit = new function() {
         }
       }
       // Return format string with replacements
-      return format.replace(/mm|m|dd|d|yyyy|yy|HH24|H24|HH|H|MS|MM|M|SS|S/g, function(item, offset) {
-        if (replacements[item]) {
-          return replacements[item];
-        } else if (lastIndex === undefined) {
-          lastIndex = offset;
-        }
-        return '';
-      }).slice(0, lastIndex) || value; // Return original value if result is empty string
+      return format.replace(/mm|m|dd|d|yyyy|yy|HH24|H24|HH|H|MS|MM|M|SS|S/g,
+        function(item, offset) {
+          if (replacements[item]) {
+            return replacements[item];
+          } else if (lastIndex === undefined) {
+            lastIndex = offset;
+          }
+          return '';
+        }).slice(0, lastIndex) || value; // Return original value if result is empty string
     };
     vself.formatDate = function(value, format) {
       return vself.formatTimestamp(value, format || 'mm/dd/yyyy');
@@ -422,7 +433,8 @@ var formSubmit = new function() {
       el.removeChild(el.firstChild); }
     // Enforce the max length
     ev.target.value = ev.target.value.slice(0, parseInt(maxcount));
-    el.appendChild(document.createTextNode(ev.target.value.length + '/' + maxcount)); // Add count message
+    el.appendChild(document.createTextNode(ev.target.value.length +
+                                           '/' + maxcount)); // Add count message
   };
 
   var assisterGetErrorMessage = function(el) {
@@ -452,23 +464,28 @@ var formSubmit = new function() {
       if (required = el.getAttribute('data-form-submit-required')) {
         switch (required.toLowerCase()) {
           case 'digits':
-            assisterValidateAndFormat(el, self.validation.isDigits, self.validation.formatDigits);
+            assisterValidateAndFormat(el, self.validation.isDigits,
+                                      self.validation.formatDigits);
             assisterSetPlaceholder(el, '0');
             break;
           case 'number':
-            assisterValidateAndFormat(el, self.validation.isNumber, self.validation.formatNumber);
+            assisterValidateAndFormat(el, self.validation.isNumber,
+                                      self.validation.formatNumber);
             assisterSetPlaceholder(el, '0.0');
             break;
           case 'currency':
-            assisterValidateAndFormat(el, self.validation.isCurrency, self.validation.formatCurrency);
+            assisterValidateAndFormat(el, self.validation.isCurrency,
+                                      self.validation.formatCurrency);
             assisterSetPlaceholder(el, '0.00');
             break;
           case 'phone':
-            assisterValidateAndFormat(el, self.validation.isPhone, self.validation.formatPhone);
+            assisterValidateAndFormat(el, self.validation.isPhone,
+                                      self.validation.formatPhone);
             assisterSetPlaceholder(el, '(000)000-0000');
             break;
           case 'zip':
-            assisterValidateAndFormat(el, self.validation.isZip, self.validation.formatZip);
+            assisterValidateAndFormat(el, self.validation.isZip,
+                                      self.validation.formatZip);
             assisterSetPlaceholder(el, '00000');
             break;
           case 'email':
@@ -478,19 +495,23 @@ var formSubmit = new function() {
             assisterSetPlaceholder(el, 'user@domain.com');
             break;
           case 'timestamp':
-            assisterValidateAndFormat(el, self.validation.isTimestamp, self.validation.formatTimestamp);
+            assisterValidateAndFormat(el, self.validation.isTimestamp,
+                                      self.validation.formatTimestamp);
             assisterSetPlaceholder(el, 'mm/dd/yyyy hh:mm:ss.ms');
             break;
           case 'date-mmddyyyy':
-            assisterValidateAndFormat(el, self.validation.isDate, self.validation.formatDate);
+            assisterValidateAndFormat(el, self.validation.isDate,
+                                      self.validation.formatDate);
             assisterSetPlaceholder(el, 'mm/dd/yyyy');
             break;
           case 'date-yyyymmdd':
-            assisterValidateAndFormat(el, self.validation.isDate, self.validation.formatDate, 'yyyy-mm-dd');
+            assisterValidateAndFormat(el, self.validation.isDate,
+                                      self.validation.formatDate, 'yyyy-mm-dd');
             assisterSetPlaceholder(el, 'yyyy-mm-dd');
             break;
           case 'time':
-            assisterValidateAndFormat(el, self.validation.isTime, self.validation.formatTime);
+            assisterValidateAndFormat(el, self.validation.isTime,
+                                      self.validation.formatTime);
             assisterSetPlaceholder(el, 'hh:mm');
             break;
           case 'radio':
@@ -498,7 +519,8 @@ var formSubmit = new function() {
               var msgEl;
               // Return an error message only if no value is selected
               if (value === undefined) {
-                msgEl = el.form.querySelector('[name="' + el.name + '"][data-form-submit-error-msg]')
+                msgEl = el.form.querySelector('[name="' + el.name +
+                                              '"][data-form-submit-error-msg]');
                 return msgEl ? msgEl.getAttribute('data-form-submit-error-msg') : fallbackErrorMessage;
               }
               return '';
