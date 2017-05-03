@@ -132,7 +132,7 @@ var formSubmit = new function() {
     el.addEventListener('keypress', counterEvent);
     el.addEventListener('change', counterEvent);
     el.addEventListener('blur', counterEvent);
-    counterEvent({'target': el}); // Show count immediately
+    counterEvent({'currentTarget': el}); // Show count immediately
     return self;
   };
 
@@ -396,10 +396,10 @@ var formSubmit = new function() {
   };
 
   var formValidationEvent = function(ev) {
-    var fields = ev.target.querySelectorAll('[name]'),
+    var fields = ev.currentTarget.querySelectorAll('[name]'),
         valid = true;
     // If this form is set to always allow then we're done here
-    if (attrPresentNotFalse(ev.target, 'data-form-submit-always-allow')) {
+    if (attrPresentNotFalse(ev.currentTarget, 'data-form-submit-always-allow')) {
       return true; }
     // Validate all fields
     for (var el, msg, x = 0; el = fields[x]; x++) {
@@ -419,21 +419,21 @@ var formSubmit = new function() {
 
   var fieldValidationEvent = function(ev) {
     var msg;
-    if (msg = self.getErrorMessage(ev.target)) {
-      self.displayErrorMessage(ev.target, msg);
+    if (msg = self.getErrorMessage(ev.currentTarget)) {
+      self.displayErrorMessage(ev.currentTarget, msg);
     } else {
-      self.removeErrorMessage(ev.target);
+      self.removeErrorMessage(ev.currentTarget);
     }
   };
 
   var counterEvent = function(ev) {
-    var el = self.getCounterElement(ev.target),
-        maxcount = ev.target.getAttribute('data-form-submit-count');
+    var el = self.getCounterElement(ev.currentTarget),
+        maxcount = ev.currentTarget.getAttribute('data-form-submit-count');
     while (el.firstChild) { // Remove current contents
       el.removeChild(el.firstChild); }
     // Enforce the max length
-    ev.target.value = ev.target.value.slice(0, parseInt(maxcount));
-    el.appendChild(document.createTextNode(ev.target.value.length +
+    ev.currentTarget.value = ev.currentTarget.value.slice(0, parseInt(maxcount));
+    el.appendChild(document.createTextNode(ev.currentTarget.value.length +
                                            '/' + maxcount)); // Add count message
   };
 
