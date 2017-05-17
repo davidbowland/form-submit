@@ -91,14 +91,12 @@ var formSubmit = new function() {
 
   self.displayErrorMessage = function(el, msg) {
     self.removeErrorMessage(el);
-    self.getErrorMessageElement(el).appendChild(document.createTextNode(msg)); // Add msg
+    self.getErrorMessageElement(el).textContent = msg; // Add msg
     return self;
   };
 
   self.removeErrorMessage = function(el) {
-    var msgEl = self.getErrorMessageElement(el)
-    while (msgEl.firstChild) { // Remove current contents
-      msgEl.removeChild(msgEl.firstChild); }
+    self.getErrorMessageElement(el).textContent = '';
     return self;
   };
 
@@ -137,13 +135,11 @@ var formSubmit = new function() {
   };
 
   self.removeCounter = function(el) {
-    var counter = self.getCounterElement(el);
     el.removeEventListener('input', counterEvent);
     el.removeEventListener('keypress', counterEvent);
     el.removeEventListener('change', counterEvent);
     el.removeEventListener('blur', counterEvent);
-    while (counter.firstChild) {
-      counter.removeChild(counter.firstChild); }
+    self.getCounterElement(el).textContent = '';
     return self;
   };
 
@@ -429,12 +425,9 @@ var formSubmit = new function() {
   var counterEvent = function(ev) {
     var el = self.getCounterElement(ev.currentTarget),
         maxcount = ev.currentTarget.getAttribute('data-form-submit-count');
-    while (el.firstChild) { // Remove current contents
-      el.removeChild(el.firstChild); }
     // Enforce the max length
     ev.currentTarget.value = ev.currentTarget.value.slice(0, parseInt(maxcount));
-    el.appendChild(document.createTextNode(ev.currentTarget.value.length +
-                                           '/' + maxcount)); // Add count message
+    el.textContent = ev.currentTarget.value.length + '/' + maxcount;
   };
 
   var assisterGetErrorMessage = function(el) {
