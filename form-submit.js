@@ -571,7 +571,7 @@ var formSubmit = new function() {
             break;
           case 'email':
             self.addValidation(el, function(value, el) {
-              return value && self.validation.isEmail(value) ? '' : assisterGetErrorMessage(el);
+              return !value || self.validation.isEmail(value) ? '' : assisterGetErrorMessage(el);
             });
             break;
           case 'timestamp':
