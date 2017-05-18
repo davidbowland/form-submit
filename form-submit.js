@@ -27,6 +27,18 @@ var formSubmit = new function() {
       regexPhoneValues = {
         '0': '\\d',
         '9': '[1-9]'
+      },
+      placeholderValues = {
+        'digits': '0',
+        'number': '0.0',
+        'currency': '0.00',
+        'phone': '(000)000-0000',
+        'zip': '00000',
+        'email': 'user@domain.com',
+        'timestamp': 'mm/dd/yyyy hh:mm:ss.ms',
+        'date-mmddyyyy': 'mm/dd/yyyy',
+        'date-yyyymmdd': 'yyyy-mm-dd',
+        'time': 'hh:mm'
       };
 
 
@@ -441,6 +453,13 @@ var formSubmit = new function() {
       return '';
     });
   };
+  
+  var assisterFormatOnly = function(target, formatter, format) {
+    self.addValidation(target, function(value, el) {
+      el.value = formatter(value, format);
+      return ''; // Optional fields are always valid
+    });
+  };
 
   var assisterSetPlaceholder = function(el, text) {
     if (el.getAttribute('placeholder') === null) {
@@ -450,62 +469,55 @@ var formSubmit = new function() {
 
   /* Constructor / on load */
   var documentLoaded = function(ev) {
-    var fields, el, x, required, count;
+    var fields, el, x, attrValue, count, placeholder;
     // Add required validation based on data-form-submit-required property
     fields = document.querySelectorAll('[data-form-submit-required]');
     for (x = 0; el = fields[x]; x++) {
-      if (required = el.getAttribute('data-form-submit-required')) {
-        switch (required.toLowerCase()) {
+      if (attrValue = el.getAttribute('data-form-submit-required')) {
+        attrValue = String(attrValue).toLowerCase();
+        if (placeholder = placeholderValues[attrValue]) {
+          assisterSetPlaceholder(el, placeholder); }
+        switch (attrValue) {
           case 'digits':
             assisterValidateAndFormat(el, self.validation.isDigits,
                                       self.validation.formatDigits);
-            assisterSetPlaceholder(el, '0');
             break;
           case 'number':
             assisterValidateAndFormat(el, self.validation.isNumber,
                                       self.validation.formatNumber);
-            assisterSetPlaceholder(el, '0.0');
             break;
           case 'currency':
             assisterValidateAndFormat(el, self.validation.isCurrency,
                                       self.validation.formatCurrency);
-            assisterSetPlaceholder(el, '0.00');
             break;
           case 'phone':
             assisterValidateAndFormat(el, self.validation.isPhone,
                                       self.validation.formatPhone);
-            assisterSetPlaceholder(el, '(000)000-0000');
             break;
           case 'zip':
             assisterValidateAndFormat(el, self.validation.isZip,
                                       self.validation.formatZip);
-            assisterSetPlaceholder(el, '00000');
             break;
           case 'email':
             self.addValidation(el, function(value, el) {
               return self.validation.isEmail(value) ? '' : assisterGetErrorMessage(el);
             });
-            assisterSetPlaceholder(el, 'user@domain.com');
             break;
           case 'timestamp':
             assisterValidateAndFormat(el, self.validation.isTimestamp,
                                       self.validation.formatTimestamp);
-            assisterSetPlaceholder(el, 'mm/dd/yyyy hh:mm:ss.ms');
             break;
           case 'date-mmddyyyy':
             assisterValidateAndFormat(el, self.validation.isDate,
                                       self.validation.formatDate);
-            assisterSetPlaceholder(el, 'mm/dd/yyyy');
             break;
           case 'date-yyyymmdd':
             assisterValidateAndFormat(el, self.validation.isDate,
                                       self.validation.formatDate, 'yyyy-mm-dd');
-            assisterSetPlaceholder(el, 'yyyy-mm-dd');
             break;
           case 'time':
             assisterValidateAndFormat(el, self.validation.isTime,
                                       self.validation.formatTime);
-            assisterSetPlaceholder(el, 'hh:mm');
             break;
           case 'radio':
             self.addRadioValidation(el, function(value, el) {
@@ -525,6 +537,49 @@ var formSubmit = new function() {
             self.addValidation(el, function(value, el) {
               return value.length ? '' : assisterGetErrorMessage(el);
             });
+        }
+      }
+    }
+    // Add optional formatting assistance
+    fields = document.querySelectorAll('[data-form-submit-optional]');
+    for (x = 0; el = fields[x]; x++) {
+      if (attrValue = el.getAttribute('data-form-submit-optional')) {
+        attrValue = String(attrValue).toLowerCase();
+        if (placeholder = placeholderValues[attrValue]) {
+          assisterSetPlaceholder(el, placeholder); }
+        switch (attrValue) {
+          case 'digits':
+            assisterFormatOnly(el, self.validation.formatDigits);
+            break;
+          case 'number':
+            assisterFormatOnly(el, self.validation.formatNumber);
+            break;
+          case 'currency':
+            assisterFormatOnly(el, self.validation.formatCurrency);
+            break;
+          case 'phone':
+            assisterFormatOnly(el, self.validation.formatPhone);
+            break;
+          case 'zip':
+            assisterFormatOnly(el, self.validation.formatZip);
+            break;
+          case 'timestamp':
+            assisterFormatOnly(el, self.validation.formatTimestamp);
+            break;
+          case 'date-mmddyyyy':
+            assisterFormatOnly(el, self.validation.formatDate);
+            break;
+          case 'date-yyyymmdd':
+            assisterFormatOnly(el, self.validation.formatDate, 'yyyy-mm-dd');
+            break;
+          case 'time':
+            assisterFormatOnly(el, self.validation.formatTime);
+            break;
+          case 'false': // The only way to positively indicate no assistance
+            break;
+          default:
+            console.log('data-form-submit-optional invalid: ' +
+                        el.getAttribute('data-form-submit-optional'));
         }
       }
     }

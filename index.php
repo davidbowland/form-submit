@@ -76,7 +76,7 @@ input[type="text"], textarea {
       </div>
       <div>
         ZIP code:
-        <input type="text" name="zip" data-form-submit-required="zip" data-form-submit-error-msg="Please enter a 5-digit ZIP code" data-form-submit-count="5" data-form-submit-count-enforce="true" />
+        <input type="text" name="zip" data-form-submit-required="zip" data-form-submit-error-msg="Please enter a 5-digit ZIP code" data-form-submit-count="5" />
       </div>
       <div>
         Email address:
@@ -118,7 +118,7 @@ input[type="text"], textarea {
       <legend>Form 4 - Text areas</legend>
       <div>
         Enter some text:
-        <textarea name="some_text" data-form-submit-required="true" data-form-submit-error-msg="Please enter some text" data-form-submit-count="250" data-form-submit-count-enforce="true"></textarea>
+        <textarea name="some_text" data-form-submit-required="true" data-form-submit-error-msg="Please enter some text" data-form-submit-count="250"></textarea>
       </div>
       <div>
         Enter more text (optional):
@@ -196,25 +196,25 @@ formSubmit.addValidation(document.getElementById('lessthan50'), function(value, 
 // formSubmit functions return the formSubmit object (when practical) for chaining
 }).addValidation(document.getElementById('doubled'), function(value, el) {
   var num = parseInt(value),
-      el_50 = document.getElementById('lessthan50'),
-      num_50 = parseInt(el_50.value);
+      el50 = document.getElementById('lessthan50'),
+      num50 = parseInt(el50.value);
   if (isNaN(num)) {
     return 'Invalid number';
-  } else if (formSubmit.getErrorMessage(el_50) || isNaN(num_50)) {
+  } else if (formSubmit.getErrorMessage(el50) || isNaN(num50)) {
     return 'Less than 50 field is invalid';
-  } else if (num_50 * 2 != num) {
-    return 'Value ' + num + ' does not match expected value ' + (num_50 * 2);
+  } else if (num50 * 2 != num) {
+    return 'Value ' + num + ' does not match expected value ' + (num50 * 2);
   }
   return '';
 }).addValidation(document.getElementById('date-weird'), function(value, el) {
-  var formatted_str;
+  var formattedStr;
   // If the date is in out expected format, leave it alone
   if (!formSubmit.validation.isDate(value, 'd, m yyyy')) {
     // Date was not in a valid format. Try to put it in a valid format.
-    formatted_str = formSubmit.validation.formatDate(value, 'd, m yyyy');
-    if (formSubmit.validation.isDate(formatted_str, 'd, m yyyy')) {
+    formattedStr = formSubmit.validation.formatDate(value, 'd, m yyyy');
+    if (formSubmit.validation.isDate(formattedStr, 'd, m yyyy')) {
       // Formatted string is valid
-      el.value = formatted_str;
+      el.value = formattedStr;
     } else {
       return 'Please enter a date in the bizarre format "D, M YYYY"';
     }
@@ -222,5 +222,50 @@ formSubmit.addValidation(document.getElementById('lessthan50'), function(value, 
   return '';
 });
   </script>
+  <form action="index.php" method="POST">
+    <fieldset>
+      <legend>Form 7 - All optional</legend>
+      <div>
+        Enter one to ten digits:
+        <input type="text" name="digits-optional" maxlength="10" data-form-submit-optional="digits" data-form-submit-count="true" />
+      </div>
+      <div>
+        Any number:
+        <input type="text" name="number-optional" data-form-submit-optional="number" />
+      </div>
+      <div>
+        Currency:
+        <input type="text" name="currency-optional" data-form-submit-optional="currency" />
+      </div>
+      <div>
+        Phone number:
+        <input type="text" name="phone-optional" data-form-submit-optional="phone" />
+      </div>
+      <div>
+        ZIP code:
+        <input type="text" name="zip-optional" data-form-submit-optional="zip" data-form-submit-count="5" />
+      </div>
+      <div>
+        Timestamp:
+        <input type="text" name="timestamp-optional" data-form-submit-optional="timestamp" />
+      </div>
+      <div>
+        Date:
+        <input type="text" name="date-mmddyyyy-optional" data-form-submit-optional="date-mmddyyyy" />
+      </div>
+      <div>
+        Date:
+        <input type="text" name="date-yyyymmdd-optional" data-form-submit-optional="date-yyyymmdd" />
+      </div>
+      <div>
+        Time:
+        <input type="text" name="time-optional" data-form-submit-optional="time" />
+      </div>
+      <button type="submit">
+        Submit
+      </button>
+      <input type="hidden" name="form_number" value="7" />
+    </fieldset>
+  </form>
 </body>
 </html>

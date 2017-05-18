@@ -7,7 +7,7 @@ Most validation can be achieved by including one or more attributes on form fiel
 #### HTML attributes and possible values
 
 * `data-form-submit-required`  
-   *specify error text with `data-form-submit-error-msg`, placeholders are added when the attribute is absent*  
+   *specify error text with `data-form-submit-error-msg`, placeholders are added when the attribute is absent*
    * `true` - Field requires a value to be validated
    * `digits` - Field requires digits and requires at least one  
       *includes user assistance*
@@ -30,6 +30,17 @@ Most validation can be achieved by including one or more attributes on form fiel
       *includes user assistance*
    * `radio` - Radio button group that requires a selection
 
+* `data-form-submit-optional`
+   * `digits` - Field assists users by allowing only digits
+   * `number` - Field assists users by allowing digits with optional decimal and optional leading negative
+   * `currency` - Field assists users by allowing digits with required decimal followed by two digits and optional leading negative
+   * `phone` - Field users by allowing ten digits in the format `(000)000-0000`
+   * `zip` - Field users by allowing five digits in the format `00000`
+   * `timestamp` - Field users by allowing a timestamp in the format `mm/dd/yyyy HH24:MM:SS.MS`
+   * `date-mmddyyyy` - Field users by allowing a date in the format `mm/dd/yyyy`
+   * `date-yyyymmdd` - Field users by allowing a date in the format `yyyy-mm-dd`
+   * `time` - Field users by allowing a time in the format `HH24:MM`
+  
 * `data-form-submit-error-msg`
    * (any string) Message to display when `data-form-submit-required` or `data-form-submit-regex` fails
 
@@ -37,11 +48,11 @@ Most validation can be achieved by including one or more attributes on form fiel
    * (any element id) Designates an element as a space for error message for a specific ID
 
 * `data-form-submit-regex`  
-   *alternative to `data-form-submit-required`, specify error text with `data-form-submit-error-msg`*  
+   *alternative to `data-form-submit-required`, specify error text with `data-form-submit-error-msg`*
    * (any regular expression) Regular expression in JavaScript syntax to validate field value
 
 * `data-form-submit-count`  
-   *activates character counter*  
+   *activates character counter*
    * (any integer > 0) Maximum character count
    * `true` - Special value indicating `maxlength` property determines max char count
 
