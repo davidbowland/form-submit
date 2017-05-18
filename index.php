@@ -239,27 +239,27 @@ formSubmit.addValidation(document.getElementById('lessthan50'), function(value, 
       </div>
       <div>
         Phone number:
-        <input type="text" name="phone-optional" data-form-submit-optional="phone" />
+        <input type="text" name="phone-optional" data-form-submit-optional="phone" data-form-submit-error-msg="Invalid phone number" />
       </div>
       <div>
         ZIP code:
-        <input type="text" name="zip-optional" data-form-submit-optional="zip" data-form-submit-count="5" />
+        <input type="text" name="zip-optional" data-form-submit-optional="zip" data-form-submit-error-msg="Invalid ZIP code" data-form-submit-count="5" />
       </div>
       <div>
         Timestamp:
-        <input type="text" name="timestamp-optional" data-form-submit-optional="timestamp" />
+        <input type="text" name="timestamp-optional" data-form-submit-optional="timestamp" data-form-submit-error-msg="Invalid timestamp" />
       </div>
       <div>
         Date:
-        <input type="text" name="date-mmddyyyy-optional" data-form-submit-optional="date-mmddyyyy" />
+        <input type="text" name="date-mmddyyyy-optional" data-form-submit-optional="date-mmddyyyy" data-form-submit-error-msg="Invalid date, use MM/DD/YYYY" />
       </div>
       <div>
         Date:
-        <input type="text" name="date-yyyymmdd-optional" data-form-submit-optional="date-yyyymmdd" />
+        <input type="text" name="date-yyyymmdd-optional" data-form-submit-optional="date-yyyymmdd" data-form-submit-error-msg="Invalid date, use YYYY-MM-DD" />
       </div>
       <div>
         Time:
-        <input type="text" name="time-optional" data-form-submit-optional="time" />
+        <input type="text" name="time-optional" data-form-submit-optional="time" data-form-submit-error-msg="Invalid time" />
       </div>
       <button type="submit">
         Submit

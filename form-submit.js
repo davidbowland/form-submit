@@ -319,7 +319,7 @@ var formSubmit = new function() {
         }
       }
       if (replacements['H']) {
-        if (value.match(/p\.?m/i)) { // PM affects 24-hour clock only
+        if (value.match(/p(\.?m)?/i)) { // PM affects 24-hour clock only
           replacements['H24'] = replacements['HH24'] = (parseInt(replacements['H']) + 12).toString();
         } else {
           replacements['H24'] = replacements['H'];
@@ -454,10 +454,11 @@ var formSubmit = new function() {
     });
   };
   
-  var assisterFormatOnly = function(target, formatter, format) {
+  var assisterOptionalFormat = function(target, validation, formatter, format) {
     self.addValidation(target, function(value, el) {
-      el.value = formatter(value, format);
-      return ''; // Optional fields are always valid
+      if (!validation((el.value = formatter(value, format)), format) && el.value.length) {
+        return assisterGetErrorMessage(el); }
+      return '';
     });
   };
 
@@ -549,31 +550,40 @@ var formSubmit = new function() {
           assisterSetPlaceholder(el, placeholder); }
         switch (attrValue) {
           case 'digits':
-            assisterFormatOnly(el, self.validation.formatDigits);
+            assisterOptionalFormat(el, self.validation.isDigits,
+                                   self.validation.formatDigits);
             break;
           case 'number':
-            assisterFormatOnly(el, self.validation.formatNumber);
+            assisterOptionalFormat(el, self.validation.isNumber,
+                                   self.validation.formatNumber);
             break;
           case 'currency':
-            assisterFormatOnly(el, self.validation.formatCurrency);
+            assisterOptionalFormat(el, self.validation.isCurrency,
+                                   self.validation.formatCurrency);
             break;
           case 'phone':
-            assisterFormatOnly(el, self.validation.formatPhone);
+            assisterOptionalFormat(el, self.validation.isPhone,
+                                   self.validation.formatPhone);
             break;
           case 'zip':
-            assisterFormatOnly(el, self.validation.formatZip);
+            assisterOptionalFormat(el, self.validation.isZip,
+                                   self.validation.formatZip);
             break;
           case 'timestamp':
-            assisterFormatOnly(el, self.validation.formatTimestamp);
+            assisterOptionalFormat(el, self.validation.isTimestamp,
+                                   self.validation.formatTimestamp);
             break;
           case 'date-mmddyyyy':
-            assisterFormatOnly(el, self.validation.formatDate);
+            assisterOptionalFormat(el, self.validation.isDate,
+                                   self.validation.formatDate);
             break;
           case 'date-yyyymmdd':
-            assisterFormatOnly(el, self.validation.formatDate, 'yyyy-mm-dd');
+            assisterOptionalFormat(el, self.validation.isDate,
+                                   self.validation.formatDate, 'yyyy-mm-dd');
             break;
           case 'time':
-            assisterFormatOnly(el, self.validation.formatTime);
+            assisterOptionalFormat(el, self.validation.isTime,
+                                   self.validation.formatTime);
             break;
           case 'false': // The only way to positively indicate no assistance
             break;
