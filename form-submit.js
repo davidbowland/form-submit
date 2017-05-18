@@ -569,6 +569,11 @@ var formSubmit = new function() {
             assisterOptionalFormat(el, self.validation.isZip,
                                    self.validation.formatZip);
             break;
+          case 'email':
+            self.addValidation(el, function(value, el) {
+              return value && self.validation.isEmail(value) ? '' : assisterGetErrorMessage(el);
+            });
+            break;
           case 'timestamp':
             assisterOptionalFormat(el, self.validation.isTimestamp,
                                    self.validation.formatTimestamp);

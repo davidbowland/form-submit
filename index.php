@@ -246,6 +246,10 @@ formSubmit.addValidation(document.getElementById('lessthan50'), function(value, 
         <input type="text" name="zip-optional" data-form-submit-optional="zip" data-form-submit-error-msg="Invalid ZIP code" data-form-submit-count="5" />
       </div>
       <div>
+        Email address:
+        <input type="text" name="email-optional" data-form-submit-optional="email" data-form-submit-error-msg="Invalid email address" />
+      </div>
+      <div>
         Timestamp:
         <input type="text" name="timestamp-optional" data-form-submit-optional="timestamp" data-form-submit-error-msg="Invalid timestamp" />
       </div>

@@ -31,7 +31,7 @@ Most validation can be achieved by including one or more attributes on form fiel
    * `radio` - Radio button group that requires a selection
 
 * `data-form-submit-optional`  
-   *Optional fields require either a valid value or no value. Specify error text with `data-form-submit-error-msg`. Placeholders are added when the attribute is absent*
+   *Optional fields require either a valid value or no value. Specify error text with `data-form-submit-error-msg`. Placeholders are added when the attribute is absent.*
    * `digits` - Field requires digits and requires at least one  
       *includes user assistance*
    * `number` - Field requires digits with optional decimal and optional leading negative  
