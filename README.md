@@ -7,7 +7,6 @@ Most validation can be achieved by including one or more attributes on form fiel
 This script supports being loaded `defer`.
 
 #### HTML attributes and possible values
-
 * `data-form-submit-required`  
    *Specify error text with `data-form-submit-error-msg`. Placeholders are added when the attribute is absent.*
    * `true` - Field requires a value to be validated
@@ -75,14 +74,10 @@ This script supports being loaded `defer`.
 * `data-form-submit-always-allow`
    * `true` - Designates a *form* to always allow submission regardless of field validation
 
-
 #### CSS for messages
-
 * Classes `form-submit-error` and `form-submit-counter` are added automatically to created elements and can be used to style. Additionally, the `data-form-submit-error-for` and `data-form-submit-counter-for` properties are added to all elements and hold the ID of the element they reference, which can be used for fine-grained styling. If a field is missing an ID the field's name is used as the property's value.
 
-
 ## Extensible through JavaScript
-
 #### JavaScript API
    Note: For ease of use, all functions that do not return a value return the formSubmit object (for chaining).  
 
@@ -142,7 +137,6 @@ This script supports being loaded `defer`.
    * Removes all validation and counter events  
 
 #### Validation API
-
 * `formSubmit.validation.isDigits(<value>)`  
    ex: `formSubmit.validation.isDigits('123')`
    * Returns true if the value contains only digits, otherwise returns false
