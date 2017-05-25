@@ -4,9 +4,9 @@ https://github.com/davidbowland/form-submit */
 var formSubmit = new function() {
   var self = this,
       fallbackErrorMessage = 'Invalid input', // Only used if nothing else is specified
-      validationCount = 0,
-      validationCallbacks = {},
-      validationForms = {},
+      validationCount = 0, // Used for unique element ID
+      validationCallbacks = {}, // Fields with validation callbacks
+      validationForms = {}, // Forms with validation callbacks
       regexTimestampValues = {
         'm': '(1[0-2]|0?[1-9])',
         'mm': '(0[1-9]|1[0-2])',
