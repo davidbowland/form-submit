@@ -76,7 +76,7 @@ Most validation can be achieved by including one or more attributes on form fiel
 
 #### CSS for messages
 
-* `data-form-submit-error-for` and `data-form-submit-counter-for` properties are added automatically and can be used to style. If a field is missing an ID the field's name is used as the property's value.
+* Classes `form-submit-error` and `form-submit-counter` are added automatically to created elements and can be used to style. Additionally, the `data-form-submit-error-for` and `data-form-submit-counter-for` properties are added to all elements and hold the ID of the element they reference, which can be used for fine-grained styling. If a field is missing an ID the field's name is used as the property's value.
 
 
 ## Extensible through JavaScript

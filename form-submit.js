@@ -118,6 +118,7 @@ var formSubmit = new function() {
         radios, insertBeforeElement;
     if (!target) { // Create a span for this message
       target = document.createElement('span');
+      target.className = 'form-submit-error';
       target.setAttribute('data-form-submit-error-for', el.id || el.name);
       if (el.type.toLowerCase() == 'radio') {
         radios = el.form.querySelectorAll('[name="' + el.name + '"]')
@@ -160,6 +161,7 @@ var formSubmit = new function() {
                                         (el.id || el.name) + '"]');
     if (!target) { // Create a span for this message
       target = document.createElement('span');
+      target.className = 'form-submit-counter';
       target.setAttribute('data-form-submit-counter-for', el.id || el.name);
       el.parentElement.insertBefore(target, el.nextSibling);
     }
