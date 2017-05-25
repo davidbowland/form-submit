@@ -1,6 +1,8 @@
 # form-submit
 Simple, powerful and extensible JavaScript form validation (IE9+)
 
+*Features user assistance by sanitizing and formatting input*
+
 ## HTML-driven
 Most validation can be achieved by including one or more attributes on form fields (input, select, textarea). Form submission is automatically prevented when any form does not pass validation.  
   
@@ -79,7 +81,7 @@ This script supports being loaded `defer`.
 
 ## Extensible through JavaScript
 #### JavaScript API
-   Note: For ease of use, all functions that do not return a value return the formSubmit object (for chaining).  
+   Note: For ease of use, all functions that do not return a value return the formSubmit object (for chaining).
 
 * `formSubmit.addValidation(<element>, <callback(value, element)>)`  
    ex: `formSubmit.addValidation(document.getElementById('fnord'), function(value) { return value.length == 0 ? 'Please enter a value' : ''; })`
