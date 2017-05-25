@@ -2,7 +2,9 @@
 Simple, powerful and extensible JavaScript form validation (IE9+)
 
 ## HTML-driven
-Most validation can be achieved by including one or more attributes on form fields (input, select, textarea). Form submission is automatically prevented when any form does not pass validation.
+Most validation can be achieved by including one or more attributes on form fields (input, select, textarea). Form submission is automatically prevented when any form does not pass validation.  
+  
+This script supports being loaded `defer`.
 
 #### HTML attributes and possible values
 
