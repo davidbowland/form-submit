@@ -623,5 +623,4 @@ var formSubmit = new function() {
     }
   };
   document.addEventListener('DOMContentLoaded', documentLoaded, true);
-  documentLoaded();
 };
