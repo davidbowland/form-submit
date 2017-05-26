@@ -1,4 +1,4 @@
-<?php
+<?php # form-submit.js demonstration page
 function getTimeURI($path) {
   # Append the file modified time to the script name to prevent using cached resources
   $timestamp = base_convert(filemtime($path), 10, 36);
@@ -7,10 +7,14 @@ function getTimeURI($path) {
 ?><!DOCTYPE html>
 <html>
 <head>
+  <!-- Settings for demonstration only -->
   <meta http-equiv="content-type" content="text/html;charset=utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <!-- Fancy import of form-submit.js. defer is supported but not used in
+       this case so the formSubmit object is available. -->
   <script src="<?php echo getTimeURI('form-submit.js'); ?>"></script>
+  <!-- Styles for demonstration only -->
   <style type="text/css">
 form ~ form {
   margin-top: 1.5em;
@@ -37,11 +41,14 @@ input[type="text"], textarea {
   </style>
 </head>
 <body>
+<!-- Give feedback when a form submission is received -->
 <?php if (isset($_POST['form_number'])): ?>
   <div>
     <h3>Form <?php echo htmlspecialchars($_POST['form_number']); ?> contents were valid.</h3>
   </div>
 <?php endif; ?>
+  <!-- Test: data-form-submit-required="digits", data-form-submit-required="number", data-form-submit-required="currency",
+             data-form-submit-error-msg, and data-form-submit-count="true" -->
   <form action="index.php" method="POST">
     <fieldset>
       <legend>Form 1 - Numbers</legend>
@@ -54,7 +61,7 @@ input[type="text"], textarea {
         <input type="text" name="number" data-form-submit-required="number" data-form-submit-error-msg="Please enter a positive or negative number" />
       </div>
       <div>
-        Currency:
+        Currency: <!-- Error messages can be specified using data-form-submit-error-msg -->
         <input type="text" name="currency" data-form-submit-required="currency" data-form-submit-error-msg="Please enter a currency amount" />
       </div>
       <button type="submit">
@@ -63,6 +70,8 @@ input[type="text"], textarea {
       <input type="hidden" name="form_number" value="1" />
     </fieldset>
   </form>
+  <!-- Test: data-form-submit-required="phone", data-form-submit-required="true", data-form-submit-required="zip",
+             data-form-submit-required="email", and data-form-submit-error-msg -->
   <form action="index.php" method="POST">
     <fieldset>
       <legend>Form 2 - Contact</legend>
@@ -88,6 +97,8 @@ input[type="text"], textarea {
       <input type="hidden" name="form_number" value="2" />
     </fieldset>
   </form>
+  <!-- Test: data-form-submit-required="timestamp", data-form-submit-required="date-mmddyyyy", data-form-submit-required="date-yyyymmdd",
+             data-form-submit-required="time", and data-form-submit-error-msg -->
   <form action="index.php" method="POST">
     <fieldset>
       <legend>Form 3 - Time/date</legend>
@@ -113,6 +124,8 @@ input[type="text"], textarea {
       <input type="hidden" name="form_number" value="3" />
     </fieldset>
   </form>
+  <!-- Test: data-form-submit-required="true", data-form-submit-required="phone",
+             data-form-submit-error-msg, and data-form-submit-count with arbitrary values -->
   <form action="index.php" method="POST">
     <fieldset>
       <legend>Form 4 - Text areas</legend>
@@ -134,6 +147,7 @@ input[type="text"], textarea {
       <input type="hidden" name="form_number" value="4" />
     </fieldset>
   </form>
+  <!-- Test: data-form-submit-required="radio" and data-form-submit-error-msg -->
   <form action="index.php" method="POST">
     <fieldset>
       <legend>Form 5 - Radio buttons</legend>
@@ -156,6 +170,7 @@ input[type="text"], textarea {
       <input type="hidden" name="form_number" value="5" />
     </fieldset>
   </form>
+  <!-- Test: data-form-submit-regex and JavaScript API -->
   <form action="index.php" method="POST">
     <fieldset>
       <legend>Form 6 - Fanciness</legend>
@@ -222,6 +237,7 @@ formSubmit.addValidation(document.getElementById('lessthan50'), function(value, 
   return '';
 });
   </script>
+  <!-- Test: data-form-submit-optional, data-form-submit-error-msg, and data-form-submit-count -->
   <form action="index.php" method="POST">
     <fieldset>
       <legend>Form 7 - All optional</legend>
