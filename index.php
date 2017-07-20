@@ -204,7 +204,7 @@ input[type="text"], textarea {
   </form>
   <script type="text/javascript">'use strict';
 // Note this code could be executed in the header using an on load function such as DOMContentLoaded or the event provided by jQuery.
-formSubmit.addValidation(document.getElementById('lessthan50'), function(value, el) {
+formSubmit.addValidation(document.getElementById('lessthan50'), function(value, el) { // Number less than 50
   var num = parseInt(value);
   if (isNaN(num)) { // Invalid number
     return 'Invalid number';
@@ -215,7 +215,7 @@ formSubmit.addValidation(document.getElementById('lessthan50'), function(value, 
   }
   return ''; // Validated!
 // formSubmit functions return the formSubmit object (when practical) for chaining
-}).addValidation(document.getElementById('doubled'), function(value, el) {
+}).addValidation(document.getElementById('doubled'), function(value, el) { // Double less-than-50 input
   var num = parseInt(value),
       el50 = document.getElementById('lessthan50'),
       num50 = parseInt(el50.value);
@@ -227,7 +227,8 @@ formSubmit.addValidation(document.getElementById('lessthan50'), function(value, 
     return 'Value ' + num + ' does not match expected value ' + (num50 * 2);
   }
   return '';
-}).addValidation(document.getElementById('date-weird'), function(value, el) {
+// 
+}).addValidation(document.getElementById('date-weird'), function(value, el) { // Weird date format
   var formattedStr;
   // If the date is in out expected format, leave it alone
   if (!formSubmit.validation.isDate(value, 'd, m yyyy')) {
