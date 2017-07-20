@@ -147,10 +147,10 @@ input[type="text"], textarea {
       <input type="hidden" name="form-number" value="4" />
     </fieldset>
   </form>
-  <!-- Test: data-form-submit-required="radio" and data-form-submit-error-msg -->
+  <!-- Test: data-form-submit-required="radio", data-form-submit-required="true" on checkboxes, and data-form-submit-error-msg -->
   <form action="index.php" method="POST">
     <fieldset>
-      <legend>Form 5 - Radio buttons</legend>
+      <legend>Form 5 - Radio buttons and check boxes</legend>
       <div>
         Choose one:<br />
         <input type="radio" name="sondheim" value="1" data-form-submit-required="radio" data-form-submit-error-msg="Please choose a Stephen Sondheim musical" /> West Side Story<br />
@@ -163,6 +163,11 @@ input[type="text"], textarea {
         <input type="radio" name="wavefunction" value="everett" data-form-submit-required="radio" data-form-submit-error-msg="Please choose a quantum mechanism interpretation" /> Many-worlds interpretation<br />
         <input type="radio" name="wavefunction" value="bohr" /> Copenhagen interpretation<br />
         <input type="radio" name="wavefunction" value="bohm" /> Bohm's interpretation
+      </div>
+      <div>
+        Check this box to continue:<br />
+        <input type="checkbox" name="very-agreeable" id="very-agreeable" value="Y" data-form-submit-required="true" data-form-submit-error-msg="You must agree to continue" /><label for="very-agreeable">I&nbsp;agree</label>
+        <div data-form-submit-error-for="very-agreeable"></div>
       </div>
       <button type="submit">
         Submit
@@ -195,6 +200,15 @@ input[type="text"], textarea {
         <input type="text" name="alpha-left" id="alpha-left" data-form-submit-group="alpha-input" />
         <input type="text" name="alpha-right" id="alpha-right" data-form-submit-group="alpha-input" />
         <div data-form-submit-error-for="alpha-input"></div>
+      </div>
+      <div>
+        Check exactly three options:
+        <input type="checkbox" name="checkbox-option-1" id="checkbox-option-1" data-form-submit-group="checkbox-options" value="1" /><label for="checkbox-option-1">1</label>
+        <input type="checkbox" name="checkbox-option-2" id="checkbox-option-2" data-form-submit-group="checkbox-options" value="2" /><label for="checkbox-option-2">2</label>
+        <input type="checkbox" name="checkbox-option-3" id="checkbox-option-3" data-form-submit-group="checkbox-options" value="3" /><label for="checkbox-option-3">3</label>
+        <input type="checkbox" name="checkbox-option-4" id="checkbox-option-4" data-form-submit-group="checkbox-options" value="4" /><label for="checkbox-option-4">4</label>
+        <input type="checkbox" name="checkbox-option-5" id="checkbox-option-5" data-form-submit-group="checkbox-options" value="5" /><label for="checkbox-option-5">5</label>
+        <div data-form-submit-error-for="checkbox-options"></div>
       </div>
       <button type="submit">
         Submit
@@ -251,6 +265,16 @@ formSubmit.addValidation(document.getElementById('lessthan50'), function(value, 
     return '"' + alphaLeft + '" does not come before "' + alphaRight + '" alphabetically.';
   }
   return '';
+}).addValidation('input[data-form-submit-group="checkbox-options"]', function(value, el) { // Checkbox options
+  var checked = document.querySelectorAll('input[data-form-submit-group="checkbox-options"]:checked').length,
+      difference = Math.abs(3 - checked);
+  if (difference) {
+    return 'Please ' + (checked < 3 ? 'check' : 'uncheck') + ' ' +
+            difference.toString() + ' more ' +
+            (difference == 1 ? 'option' : 'options');
+  }
+  return '';
+
 });
   </script>
   <!-- Test: data-form-submit-optional, data-form-submit-error-msg, and data-form-submit-count -->

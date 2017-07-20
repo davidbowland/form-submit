@@ -90,14 +90,18 @@ var formSubmit = new function() {
   self.getErrorMessage = function(el) {
     var callback = validationCallbacks[getUniqueID(el)],
       value = el.value,
-      radioButton;
+      radioButton,
+      elementType = el.type.toLowerCase();
     // Only validate selected radio buttons
-    if (el.type.toLowerCase() == 'radio') {
+    if (elementType == 'radio') {
       if (radioButton = el.form.querySelector('[name="' + el.name + '"]:checked')) {
         value = radioButton.value;
       } else {
         value = undefined;
       }
+    // Validate checkbox
+    } else if (elementType == 'checkbox') {
+      value = el.checked;
     // Validated the selected item
     } else if (el.tagName.toUpperCase() == 'SELECT') {
       value = el.querySelector(':checked').value;
@@ -576,7 +580,7 @@ var formSubmit = new function() {
             break;
           default:
             self.addValidation(el, function(value, el) {
-              return value.length ? '' : assisterGetErrorMessage(el);
+              return value ? '' : assisterGetErrorMessage(el);
             });
         }
       }
