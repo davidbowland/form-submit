@@ -290,7 +290,7 @@ var formSubmit = new function() {
       // Format expected
       if (groups = getRegexFromString(format.replace(/mm|dd|HH|MM|SS/g,
           function(item) { // Change double letters to single letters in regex
-            return item.slice(Math.min(item.length / -2));
+            return item.slice(Math.floor(item.length / -2));
           }), true, true).exec(value)) {
         tokens = format.match(/mm|m|dd|d|yyyy|yy|HH|H|MS|MM|M|SS|S/g);
         groups.shift();
