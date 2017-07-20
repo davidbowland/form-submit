@@ -170,7 +170,7 @@ input[type="text"], textarea {
       <input type="hidden" name="form-number" value="5" />
     </fieldset>
   </form>
-  <!-- Test: data-form-submit-regex and JavaScript API -->
+  <!-- Test: data-form-submit-regex, data-form-submit-group, form-submit-error-for, and JavaScript API -->
   <form action="index.php" method="POST">
     <fieldset>
       <legend>Form 6 - Fanciness</legend>
@@ -189,6 +189,12 @@ input[type="text"], textarea {
       <div>
         Enter the same word twice:
         <input type="text" name="regex" placeholder="pizza pizza" data-form-submit-regex="([a-zA-Z]+)\W*(\1)" />
+      </div>
+      <div>
+        Enter two words so the left word comes first alphabetically:
+        <input type="text" name="alpha-left" id="alpha-left" data-form-submit-group="alpha-input" />
+        <input type="text" name="alpha-right" id="alpha-right" data-form-submit-group="alpha-input" />
+        <div data-form-submit-error-for="alpha-input"></div>
       </div>
       <button type="submit">
         Submit
@@ -233,6 +239,15 @@ formSubmit.addValidation(document.getElementById('lessthan50'), function(value, 
     } else {
       return 'Please enter a date in the bizarre format "D, M YYYY"';
     }
+  }
+  return '';
+}).addValidation('input[data-form-submit-group="alpha-input"]', function(value, el) { // Alphabetical inputs
+  var alphaLeft = document.getElementById('alpha-left').value,
+      alphaRight = document.getElementById('alpha-right').value;
+  if (!alphaLeft.length || !alphaRight.length) {
+    return 'Please enter a word in both boxes.';
+  } else if (alphaLeft.toLowerCase() >= alphaRight.toLowerCase()) {
+    return '"' + alphaLeft + '" does not come before "' + alphaRight + '" alphabetically.';
   }
   return '';
 });

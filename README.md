@@ -54,12 +54,16 @@ This script supports being loaded `defer`.
       *includes user assistance*
    * `time` - Field requires a time in the format `HH24:MM`  
       *includes user assistance*
-  
+
+* `data-form-submit-group`  
+   *Useful for elements whose validation depends on each other*
+   * (any unique id) Unique ID matched to `data-form-submit-error-for` for specifying error message output
+
 * `data-form-submit-error-msg`
    * (any string) Message to display when `data-form-submit-required` or `data-form-submit-regex` fails
 
 * `data-form-submit-error-for`
-   * (any element id) Designates an element as a space for error message for a specific ID
+   * (any element id or `data-form-submit-group` id) Designates an element as a space for error message for a specific ID
 
 * `data-form-submit-regex`  
    *Alternative to `data-form-submit-required`. Specify error text with `data-form-submit-error-msg`.*

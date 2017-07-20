@@ -124,7 +124,8 @@ var formSubmit = new function() {
 
   self.getErrorMessageElement = function(el) {
     var target = document.querySelector('[data-form-submit-error-for="' +
-                                        (el.id || el.name) + '"]'),
+                                        (el.getAttribute('data-form-submit-group') ||
+                                            el.id || el.name) + '"]'),
         radios, insertBeforeElement;
     if (!target) { // Create a span for this message
       target = document.createElement('span');
@@ -178,7 +179,8 @@ var formSubmit = new function() {
 
   self.getCounterElement = function(el) {
     var target = document.querySelector('[data-form-submit-counter-for="' +
-                                        (el.id || el.name) + '"]');
+                                        (el.getAttribute('data-form-submit-group') ||
+                                            el.id || el.name) + '"]');
     if (!target) { // Create a span for this message
       target = document.createElement('span');
       target.className = 'form-submit-counter';
