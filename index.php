@@ -42,9 +42,9 @@ input[type="text"], textarea {
 </head>
 <body>
 <!-- Give feedback when a form submission is received -->
-<?php if (isset($_POST['form_number'])): ?>
+<?php if (isset($_POST['form-number'])): ?>
   <div>
-    <h3>Form <?php echo htmlspecialchars($_POST['form_number']); ?> contents were valid.</h3>
+    <h3>Form <?php echo htmlspecialchars($_POST['form-number']); ?> contents were valid.</h3>
   </div>
 <?php endif; ?>
   <!-- Test: data-form-submit-required="digits", data-form-submit-required="number", data-form-submit-required="currency",
@@ -67,7 +67,7 @@ input[type="text"], textarea {
       <button type="submit">
         Submit
       </button>
-      <input type="hidden" name="form_number" value="1" />
+      <input type="hidden" name="form-number" value="1" />
     </fieldset>
   </form>
   <!-- Test: data-form-submit-required="phone", data-form-submit-required="true", data-form-submit-required="zip",
@@ -94,7 +94,7 @@ input[type="text"], textarea {
       <button type="submit">
         Submit
       </button>
-      <input type="hidden" name="form_number" value="2" />
+      <input type="hidden" name="form-number" value="2" />
     </fieldset>
   </form>
   <!-- Test: data-form-submit-required="timestamp", data-form-submit-required="date-mmddyyyy", data-form-submit-required="date-yyyymmdd",
@@ -121,7 +121,7 @@ input[type="text"], textarea {
       <button type="submit">
         Submit
       </button>
-      <input type="hidden" name="form_number" value="3" />
+      <input type="hidden" name="form-number" value="3" />
     </fieldset>
   </form>
   <!-- Test: data-form-submit-required="true", data-form-submit-required="phone",
@@ -144,7 +144,7 @@ input[type="text"], textarea {
       <button type="submit">
         Submit
       </button>
-      <input type="hidden" name="form_number" value="4" />
+      <input type="hidden" name="form-number" value="4" />
     </fieldset>
   </form>
   <!-- Test: data-form-submit-required="radio" and data-form-submit-error-msg -->
@@ -167,7 +167,7 @@ input[type="text"], textarea {
       <button type="submit">
         Submit
       </button>
-      <input type="hidden" name="form_number" value="5" />
+      <input type="hidden" name="form-number" value="5" />
     </fieldset>
   </form>
   <!-- Test: data-form-submit-regex and JavaScript API -->
@@ -193,7 +193,7 @@ input[type="text"], textarea {
       <button type="submit">
         Submit
       </button>
-      <input type="hidden" name="form_number" value="6" />
+      <input type="hidden" name="form-number" value="6" />
     </fieldset>
   </form>
   <script type="text/javascript">'use strict';
@@ -284,7 +284,7 @@ formSubmit.addValidation(document.getElementById('lessthan50'), function(value, 
       <button type="submit">
         Submit
       </button>
-      <input type="hidden" name="form_number" value="7" />
+      <input type="hidden" name="form-number" value="7" />
     </fieldset>
   </form>
 </body>
