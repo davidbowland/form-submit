@@ -83,14 +83,14 @@ This script supports being loaded `defer`.
 #### JavaScript API
    Note: For ease of use, all functions that do not return a value return the formSubmit object (for chaining).
 
-* `formSubmit.addValidation(<element>, <callback(value, element)>)`  
+* `formSubmit.addValidation(<element, NodeList, or query selector string>, <callback(value, element)>)`  
    ex: `formSubmit.addValidation(document.getElementById('fnord'), function(value) { return value.length == 0 ? 'Please enter a value' : ''; })`
-   * Adds validation to an element (input, textarea, select)  
+   * Adds validation to an element (input, textarea, select), all elements in a [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList), or all elements identified by a [query selector string](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll)  
    The callback is called using the current value and the element itself and should return either an error message or an empty string (false value).
 
-* `formSubmit.removeValidation(<element>)`  
+* `formSubmit.removeValidation(<element, NodeList, or query selector string>)`  
    ex: `formSubmit.removeValidation(document.getElementById('fnord'))`
-   * Removes validation from an element (input, textarea, select)
+   * Removes validation from an element (input, textarea, select), all elements in a [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList), or all elements identified by a [query selector string](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll)
 
 * `formSubmit.addRadioValidation(<element>, <callback(value, element)>)`  
    ex: `formSubmit.addRadioValidation(document.getElementById('fnord'), function(value) { return value === undefined ? 'Please make a selection' : ''; })`
@@ -121,14 +121,14 @@ This script supports being loaded `defer`.
    ex: `formSubmit.getErrorMessageElement(document.getElementById('fnord'))`
    * Returns the element that will contain the error message of the passed element, *creating the element if necessary*
 
-* `formSubmit.addCounter(<element>, <maxlength>)`  
+* `formSubmit.addCounter(<element, NodeList, or query selector string>, <maxlength>)`  
    ex: `formSubmit.addCounter(document.getElementById('fnord'))` or `formSubmit.addCounter(document.getElementById('fnord'), 100)`
-   * Adds a character counter to an element (input, textarea) with an optional maximum count specified  
+   * Adds a character counter to an element (input, textarea), all elements in a [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList), or all elements identified by a [query selector string](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll), with an optional maximum count specified  
    If the max count is not specified it will be taken from properties. Property `data-form-submit-count` is added if not present.
 
-* `formSubmit.removeCounter(<element>)`  
+* `formSubmit.removeCounter(<element, NodeList, or query selector string>)`  
    ex: `formSubmit.removeCounter(document.getElementById('fnord'))`
-   * Removes a character counter from an element (input, textarea)
+   * Removes a character counter from an element (input, textarea), all elements in a [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList), or all elements identified by a [query selector string](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll)
 
 * `formSubmit.getCounterElement(<element>)`  
    ex: `formSubmit.getCounterElement(document.getElementById('fnord'))`

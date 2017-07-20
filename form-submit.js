@@ -43,8 +43,13 @@ var formSubmit = new function() {
 
 
   /* Public methods */
-  self.addValidation = function(el, callback) {
-    self.removeValidation(el);
+  self.addValidation = function(selector, callback) {
+    applySelector(selector, self.addValidationSingleElement, callback);
+    return self;
+  };
+
+  self.addValidationSingleElement = function(el, callback) {
+    self.removeValidationSingleElement(el);
     validationCallbacks[getUniqueID(el)] = callback;
     el.addEventListener('change', fieldValidationEvent);
     el.addEventListener('blur', fieldValidationEvent);
@@ -52,7 +57,12 @@ var formSubmit = new function() {
     return self;
   };
 
-  self.removeValidation = function(el) {
+  self.removeValidation = function(selector) {
+    applySelector(selector, self.removeValidationSingleElement);
+    return self;
+  };
+
+  self.removeValidationSingleElement = function(el) {
     el.removeEventListener('change', fieldValidationEvent);
     el.removeEventListener('blur', fieldValidationEvent);
     delete validationCallbacks[getUniqueID(el)];
@@ -64,7 +74,7 @@ var formSubmit = new function() {
   self.addRadioValidation = function(el, callback) {
     var radioButtons = el.form.querySelectorAll('[name="' + el.name + '"]');
     for (var radio, x = 0; radio = radioButtons[x]; x++) {
-      self.addValidation(radio, callback);
+      self.addValidationSingleElement(radio, callback);
     }
     return self;
   };
@@ -72,7 +82,7 @@ var formSubmit = new function() {
   self.removeRadioValidation = function(el, callback) {
     var radioButtons = el.form.querySelectorAll('[name="' + el.name + '"]');
     for (var radio, x = 0; radio = radioButtons[x]; x++) {
-      self.removeValidation(radio, callback);
+      self.removeValidationSingleElement(radio, callback);
     }
     return self;
   };
@@ -131,8 +141,13 @@ var formSubmit = new function() {
     return target;
   };
 
-  self.addCounter = function(el, maxlength) {
-    self.removeCounter(el);
+  self.addCounter = function(selector, maxlength) {
+    applySelector(selector, self.addCounterSingleElement, maxlength);
+    return self;
+  };
+
+  self.addCounterSingleElement = function(el, maxlength) {
+    self.removeCounterSingleElement(el);
     // Set data-form-submit-count depending on passed value or maxlength, if appropriate
     if (maxlength !== undefined) {
       el.setAttribute('data-form-submit-count', maxlength);
@@ -147,7 +162,12 @@ var formSubmit = new function() {
     return self;
   };
 
-  self.removeCounter = function(el) {
+  self.removeCounter = function(selector) {
+    applySelector(selector, self.removeCounterSingleElement);
+    return self;
+  };
+
+  self.removeCounterSingleElement = function(el) {
     el.removeEventListener('input', counterEvent);
     el.removeEventListener('keypress', counterEvent);
     el.removeEventListener('change', counterEvent);
@@ -371,6 +391,22 @@ var formSubmit = new function() {
 
 
   /* Private functions */
+  var applySelector = function(selector, func) {
+    var args = Array.prototype.slice.call(arguments, 2);
+    // Query string (CSS selectors)
+    if (typeof selector === 'string') {
+      selector = document.querySelectorAll(selector);
+    // Single element
+    } else if (selector.nodeType) {
+      selector = [selector];
+    } // Everything else is taken as is
+
+    // Loop through each element and call func, with arguments
+    for (var x = 0, el; el = selector[x]; x++) {
+      func.apply(null, [el].concat(args));
+    }
+  };
+
   var attrPresentNotFalse = function(el, attr) {
     var value = el.getAttribute(attr);
     return value && value.toLowerCase() != 'false';
@@ -449,7 +485,7 @@ var formSubmit = new function() {
   };
 
   var assisterValidateAndFormat = function(target, validation, formatter, format) {
-    self.addValidation(target, function(value, el) {
+    self.addValidationSingleElement(target, function(value, el) {
       if (!validation((el.value = formatter(value, format)), format)) {
         return assisterGetErrorMessage(el); }
       return '';
@@ -457,7 +493,7 @@ var formSubmit = new function() {
   };
   
   var assisterOptionalFormat = function(target, validation, formatter, format) {
-    self.addValidation(target, function(value, el) {
+    self.addValidationSingleElement(target, function(value, el) {
       if (!validation((el.value = formatter(value, format)), format) && el.value.length) {
         return assisterGetErrorMessage(el); }
       return '';
@@ -621,7 +657,7 @@ var formSubmit = new function() {
       count = el.getAttribute('data-form-submit-count');
       if (count != 'true' && isNaN(parseInt(count))) {
         console.log('data-form-submit-count invalid: ' + el.getAttribute('data-form-submit-count')); }
-      self.addCounter(el);
+      self.addCounterSingleElement(el);
     }
   };
   document.addEventListener('DOMContentLoaded', documentLoaded, true);
