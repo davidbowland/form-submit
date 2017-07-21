@@ -383,7 +383,7 @@ var formSubmit = new function() {
           groups, replacement;
       if (optionalValues && (groups = str.match(/mm|m|dd|d|yyyy|yy|HH24|H24|HH|H|MS|MM|M|SS|S/g))) {
         optional = '(?:';
-        for (var x = 0; groups[x]; x++) {
+        for (var x = 0; x < groups.length; x++) {
           regexEnd += ')?'; }
       }
       return new RegExp('^' + str.replace(/mm|m|dd|d|yyyy|yy|HH24|H24|HH|H|MS|MM|M|SS|S|.+?/g, function(item) {
