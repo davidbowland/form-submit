@@ -22,7 +22,7 @@ var formSubmit = new function() {
         'MM': '([0-5]\\d)',
         'S': '((?:0|[1-5])?\\d)',
         'SS': '([0-5]\\d)',
-        'MS': '(\\d{1,6})'
+        'MS': '(\\d{0,6}?)' // MS will be zeros when absent
       },
       regexPhoneValues = {
         '0': '\\d',
@@ -282,9 +282,10 @@ var formSubmit = new function() {
     };
     vself.formatTimestamp = function(value, format) {
       var groups, tokens,
-          replacements = {},
+          replacements = {'MS': '000000', // MS default value
+                          'SS': '00'}, // SS default values
           lastIndex = undefined;
-      format = format || 'mm/dd/yyyy HH:MM:SS.MS';
+      format = format || 'mm/dd/yyyy HH24:MM:SS.MS';
       if (!value) { // Can't format an empty string
         return ''; }
       // Format expected
@@ -292,38 +293,48 @@ var formSubmit = new function() {
           function(item) { // Change double letters to single letters in regex
             return item.slice(Math.floor(item.length / -2));
           }), true, true).exec(value)) {
-        tokens = format.match(/mm|m|dd|d|yyyy|yy|HH|H|MS|MM|M|SS|S/g);
+        tokens = format.match(/mm|m|dd|d|yyyy|yy|HH24|H24|HH|H|MS|MM|M|SS|S/g);
         groups.shift();
-        for (var m, x = 0; m = groups[x]; x++) {
+        for (var m, r, x = 0; m = groups[x]; x++) {
+          // Don't add a zero to the minutes in favor of hours
+          if (['M', 'MM'].indexOf(tokens[x]) >= 0 && m.length == 1) {
+            if (r = replacements['HH24'] || replacements['HH']) {
+              m = r.slice(1) + m;
+              replacements['HH24'] = replacements['HH'] = '0' + r.substr(0, 1);
+            }
+          }
+          // Add leading zero to values where required
           if (['mm', 'dd', 'HH24', 'HH', 'MM', 'SS'].indexOf(tokens[x]) >= 0) {
             m = ('00' + m).slice(-2);
+          } else if (tokens[x] == 'MS') {
+            m = (m + '000000').substr(0, 6);
           }
           replacements[tokens[x]] = m;
         }
       } else {
         // m/d/yy or yyyy
-        if (groups = value.match(/(?:^|\D)(1[0-2]|0?[1-9])([\\/-]?)([12]\d|3[01]|0?[1-9])(\2)((?:19|20)?\d\d)(?:\D|$)/)) {
+        if (groups = value.match(/(?:^|\D)(1[0-2]|0?[1-9])([\\/-]?)([12]\d|3[01]|0?[1-9])(\2)((?:19|20)?\d\d)/)) {
           replacements['m'] = groups[1];
           replacements['d'] = groups[3];
           replacements['yy'] = groups[5];
         // yyyy-m-d
-        } else if (groups = value.match(/(?:^|\D)((?:19|20)?\d\d)([\\/-]?)(1[0-2]|0?[1-9])(\2)([12]\d|3[01]|0?[1-9])(?:\D|$)/)) {
+        } else if (groups = value.match(/(?:^|\D)((?:19|20)?\d\d)([\\/-]?)(1[0-2]|0?[1-9])(\2)([12]\d|3[01]|0?[1-9])/)) {
           replacements['yy'] = groups[1];
           replacements['m'] = groups[3];
           replacements['d'] = groups[5];
         }
         // h24:m:s.ms (date removed, if found)
-        if (groups && (groups = value.slice(groups[0].length).match(/(?:^|\D)(1\d|2[0-3]|0?\d)[\.:]?((?:0|[1-5])?\d)(?:[\.:]?((?:0|[1-5])?\d)(?:[\.:]?(\d{1,6}))?)?(?:\D|$)/))) {
+        if (groups && (groups = value.slice(groups[0].length).match(/(?:^|\D)(1\d|2[0-3]|0?\d)[\.:]?((?:0|[1-5])?\d)(?:[\.:]?((?:0|[1-5])?\d)(?:[\.:]?(\d{1,6}))?)?/))) {
           replacements['H'] = groups[1];
           replacements['M'] = groups[2];
-          replacements['S'] = groups[3];
-          replacements['MS'] = groups[4];
+          replacements['S'] = groups[3] || '0';
+          replacements['MS'] = groups[4] || '000000';
         // h24:m:s.ms (date intact)
-        } else if (groups = value.match(/(?:^|\D)(1\d|2[0-3]|0?\d)[\.:]?((?:0|[1-5])?\d)(?:[\.:]?((?:0|[1-5])?\d)(?:[\.:]?(\d{1,6}))?)?(?:\D|$)/)) {
+        } else if (groups = value.match(/(?:^|\D)(1\d|2[0-3]|0?\d)[\.:]?((?:0|[1-5])?\d)(?:[\.:]?((?:0|[1-5])?\d)(?:[\.:]?(\d{1,6}))?)?/)) {
           replacements['H'] = groups[1];
           replacements['M'] = groups[2];
-          replacements['S'] = groups[3];
-          replacements['MS'] = groups[4];
+          replacements['S'] = groups[3] || '0';
+          replacements['MS'] = groups[4] || '000000';
         }
       }
       // Create multiple formats
