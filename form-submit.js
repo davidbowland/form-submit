@@ -281,68 +281,65 @@ var formSubmit = new function() {
       return vself.formatDigits(value, format || '00000');
     };
     vself.formatTimestamp = function(value, format) {
-      var groups, tokens,
-          replacements = {'MS': '000000', // MS default value
-                          'SS': '00'}, // SS default values
+      var groups, tokens, tokenFormat, hourTwelve,
+          replacements = {},
           lastIndex = undefined;
       format = format || 'mm/dd/yyyy HH24:MM:SS.MS';
       if (!value) { // Can't format an empty string
         return ''; }
-      // Format expected
-      if (groups = getRegexFromString(format.replace(/mm|dd|HH|MM|SS/g,
+      // Expected format
+      tokenFormat = format.replace(/mm|dd|HH|MM|SS/g,
           function(item) { // Change double letters to single letters in regex
             return item.slice(Math.floor(item.length / -2));
-          }), true, true).exec(value)) {
-        tokens = format.match(/mm|m|dd|d|yyyy|yy|HH24|H24|HH|H|MS|MM|M|SS|S/g);
+          });
+      if (groups = getRegexFromString(tokenFormat, true, true).exec(value)) {
+        tokens = tokenFormat.match(/m|d|yyyy|yy|H|MS|M|S/g);
         groups.shift();
-        for (var m, r, x = 0; m = groups[x]; x++) {
-          // Don't add a zero to the minutes in favor of hours
-          if (['M', 'MM'].indexOf(tokens[x]) >= 0 && m.length == 1) {
-            if (r = replacements['HH24'] || replacements['HH']) {
-              m = r.slice(1) + m;
-              replacements['HH24'] = replacements['HH'] = '0' + r.substr(0, 1);
-            }
-          }
-          // Add leading zero to values where required
-          if (['mm', 'dd', 'HH24', 'HH', 'MM', 'SS'].indexOf(tokens[x]) >= 0) {
-            m = ('00' + m).slice(-2);
-          } else if (tokens[x] == 'MS') {
-            m = (m + '000000').substr(0, 6);
-          }
-          replacements[tokens[x]] = m;
-        }
+        for (var m, x = 0; m = groups[x]; x++) {
+          replacements[tokens[x]] = m; }
       } else {
         // m/d/yy or yyyy
-        if (groups = value.match(/(?:^|\D)(1[0-2]|0?[1-9])([\\/-]?)([12]\d|3[01]|0?[1-9])(\2)((?:19|20)?\d\d)/)) {
+        if (groups = value.match(/^\D*(1[0-2]|0?[1-9])([\\/-]?)([12]\d|3[01]|0?[1-9])(\2)((?:19|20)?\d\d)\D*\b/)) {
           replacements['m'] = groups[1];
           replacements['d'] = groups[3];
           replacements['yy'] = groups[5];
         // yyyy-m-d
-        } else if (groups = value.match(/(?:^|\D)((?:19|20)?\d\d)([\\/-]?)(1[0-2]|0?[1-9])(\2)([12]\d|3[01]|0?[1-9])/)) {
+        } else if (groups = value.match(/^\D*((?:19|20)?\d\d)([\\/-]?)(1[0-2]|0?[1-9])(\2)([12]\d|3[01]|0?[1-9])\D*\b/)) {
           replacements['yy'] = groups[1];
           replacements['m'] = groups[3];
           replacements['d'] = groups[5];
         }
         // h24:m:s.ms (date removed, if found)
-        if (groups && (groups = value.slice(groups[0].length).match(/(?:^|\D)(1\d|2[0-3]|0?\d)[\.:]?((?:0|[1-5])?\d)(?:[\.:]?((?:0|[1-5])?\d)(?:[\.:]?(\d{1,6}))?)?/))) {
+        if (groups && (groups = value.slice(groups[0].length).match(/\b\D*(1\d|2[0-3]|0?\d)[\.:]?((?:0|[1-5])?\d)(?:[\.:]?((?:0|[1-5])?\d)(?:[\.:]?(\d{1,6})\d*)?)?\D*\b/))) {
           replacements['H'] = groups[1];
           replacements['M'] = groups[2];
-          replacements['S'] = groups[3] || '0';
-          replacements['MS'] = groups[4] || '000000';
+          replacements['S'] = groups[3];
+          replacements['MS'] = groups[4];
         // h24:m:s.ms (date intact)
-        } else if (groups = value.match(/(?:^|\D)(1\d|2[0-3]|0?\d)[\.:]?((?:0|[1-5])?\d)(?:[\.:]?((?:0|[1-5])?\d)(?:[\.:]?(\d{1,6}))?)?/)) {
+        } else if (groups = value.match(/\b\D*(1\d|2[0-3]|0?\d)[\.:]?((?:0|[1-5])?\d)(?:[\.:]?((?:0|[1-5])?\d)(?:[\.:]?(\d{1,6})\d*)?)?\D*\b/)) {
           replacements['H'] = groups[1];
           replacements['M'] = groups[2];
-          replacements['S'] = groups[3] || '0';
-          replacements['MS'] = groups[4] || '000000';
+          replacements['S'] = groups[3];
+          replacements['MS'] = groups[4];
         }
       }
+      // Don't allow one-digit minutes with two-digit hours
+      if (replacements['H'] && (replacements['M'] || '').length == 1) {
+        replacements['M'] = replacements['H'].slice(1) + replacements['M'];
+        replacements['H'] = replacements['H'].slice(0, 1);
+      }
+      // When minutes were found, use zero default seconds
+      if (replacements['M']) {
+        replacements['S'] = replacements['S'] || '0' }
+      // When seconds were found, default and pad ms with zeros
+      if (replacements['S']) {
+        replacements['MS'] = ((replacements['MS'] || '') + '000000').slice(0, 6); }
       // Create multiple formats
       ['m', 'd', 'H', 'M', 'S'].forEach(function(item) {
         var str = replacements[item];
         if (str) {
           replacements[item] = str.match(/^0*(\d+)$/)[1];
-          replacements[item + item] = ('0' + str).slice(-2);
+          replacements[item + item] = ('00' + str).slice(-2);
         }
       });
       if (replacements['yy']) {
@@ -358,11 +355,14 @@ var formSubmit = new function() {
         }
       }
       if (replacements['H']) {
+        hourTwelve = parseInt(replacements['H']) % 12;
         if (value.match(/p(\.?m)?/i)) { // PM affects 24-hour clock only
-          replacements['H24'] = replacements['HH24'] = (parseInt(replacements['H']) + 12).toString();
+          replacements['H24'] = replacements['HH24'] = ((hourTwelve + 12) % 24).toString();
         } else {
           replacements['H24'] = replacements['H'];
           replacements['HH24'] = replacements['HH'];
+          replacements['H'] = hourTwelve.toString();
+          replacements['HH'] = ('0' + replacements['H']).slice(-2);
         }
       }
       // Return format string with replacements
@@ -397,12 +397,12 @@ var formSubmit = new function() {
         for (var x = 0; x < groups.length; x++) {
           regexEnd += ')?'; }
       }
-      return new RegExp('^' + str.replace(/mm|m|dd|d|yyyy|yy|HH24|H24|HH|H|MS|MM|M|SS|S|.+?/g, function(item) {
+      return new RegExp('^\\D*' + str.replace(/mm|m|dd|d|yyyy|yy|HH24|H24|HH|H|MS|MM|M|SS|S|.+?/g, function(item) {
         if (replacement = regexTimestampValues[item]) {
           return optional + replacement;
         }
         return generalSeparators ? '\\D?' : item.replace(/(\W)/g, '\\$1');
-      }) + regexEnd + '$');
+      }) + regexEnd + '\\D*$');
     };
   };
 
