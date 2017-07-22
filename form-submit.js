@@ -367,14 +367,14 @@ var formSubmit = new function() {
       }
       // Return format string with replacements
       return format.replace(/mm|m|dd|d|yyyy|yy|HH24|H24|HH|H|MS|MM|M|SS|S/g,
-        function(item, offset) {
-          if (replacements[item]) {
-            return replacements[item];
-          } else if (lastIndex === undefined) {
-            lastIndex = offset;
-          }
-          return '';
-        }).slice(0, lastIndex) || value; // Return original value if result is empty string
+          function(item, offset) {
+            if (replacements[item]) {
+              return replacements[item];
+            } else if (lastIndex === undefined) {
+              lastIndex = offset;
+            }
+            return '';
+          }).slice(0, lastIndex) || value; // Return original value if result is empty string
     };
     vself.formatDate = function(value, format) {
       return vself.formatTimestamp(value, format || 'mm/dd/yyyy');
