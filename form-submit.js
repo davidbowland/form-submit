@@ -234,7 +234,7 @@ var formSubmit = new function() {
       return value.search(/^.+@([a-z0-9]([a-z0-9-]*[a-z0-9])*\.)+[a-z]+$/i) >= 0;
     };
     vself.isTimestamp = function(value, format, generalSeparators) {
-      return getRegexFromString(format || 'mm/dd/yyyy HH:MM:SS.MS',
+      return getRegexFromString(format || 'mm/dd/yyyy HH24:MM:SS.MS',
                                 generalSeparators).test(value);
     };
     vself.isDate = function(value, format, generalSeparators) {
