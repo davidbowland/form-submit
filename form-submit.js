@@ -339,7 +339,7 @@ var formSubmit = new function() {
         var str = replacements[item];
         if (str) {
           replacements[item] = str.match(/^0*(\d+)$/)[1];
-          replacements[item + item] = ('00' + str).slice(-2);
+          replacements[item + item] = ('0' + str).slice(-2);
         }
       });
       if (replacements['yy']) {
