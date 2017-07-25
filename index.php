@@ -84,6 +84,15 @@ input[type="text"], textarea {
         <input type="text" name="city" data-form-submit-required="true" data-form-submit-error-msg="Please enter a your city" />
       </div>
       <div>
+        State: <!-- Using "true" requires an option where the value is not blank> -->
+        <select name="state" data-form-submit-required="true" data-form-submit-error-msg="Please select a state">
+          <option value="">Select a state</option>
+          <option value="1">Denial</option>
+          <option value="A">Emergency</option>
+          <option value="3">The Union</option>
+        </select>
+      </div>
+      <div>
         ZIP code:
         <input type="text" name="zip" data-form-submit-required="zip" data-form-submit-error-msg="Please enter a 5-digit ZIP code" data-form-submit-count="5" />
       </div>
