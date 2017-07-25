@@ -134,7 +134,7 @@ var formSubmit = new function() {
     if (!target) { // Create a span for this message
       target = document.createElement('span');
       target.className = 'form-submit-error';
-      target.setAttribute('data-form-submit-error-for', el.id || el.name);
+      target.setAttribute('data-form-submit-error-for', el.getAttribute('data-form-submit-group') || el.id || el.name);
       if (el.type.toLowerCase() == 'radio') {
         radios = el.form.querySelectorAll('[name="' + el.name + '"]')
         insertBeforeElement = radios[radios.length - 1].nextElementSibling;
