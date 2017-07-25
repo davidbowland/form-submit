@@ -356,8 +356,12 @@ var formSubmit = new function() {
       }
       if (replacements['H']) {
         hourTwelve = parseInt(replacements['H']) % 12;
-        if (value.match(/p(\.?m)?/i)) { // PM affects 24-hour clock only
-          replacements['H24'] = replacements['HH24'] = ((hourTwelve + 12) % 24).toString();
+        if (groups = value.match(/(a|p)/i)) { // AM/PM affects 24-hour clock only
+          // Add twelve hours for PM
+          if (groups[1] == 'p') {
+            hourTwelve = (hourTwelve + 12) % 24 } ;
+          replacements['H24'] = hourTwelve.toString();
+          replacements['HH24'] = ('0' + replacements['H24']).slice(-2);
         } else {
           replacements['H24'] = replacements['H'];
           replacements['HH24'] = replacements['HH'];
