@@ -175,7 +175,8 @@ input[type="text"], textarea {
       </div>
       <div>
         Check this box to continue:<br />
-        <input type="checkbox" name="very-agreeable" id="very-agreeable" value="Y" data-form-submit-required="true" data-form-submit-error-msg="You must agree to continue" /><label for="very-agreeable">I&nbsp;agree</label>
+        <input type="checkbox" name="very-agreeable" id="very-agreeable" value="Y" data-form-submit-required="true" data-form-submit-error-msg="You must agree to continue" />
+        <label for="very-agreeable">I&nbsp;agree</label>
         <div data-form-submit-error-for="very-agreeable"></div>
       </div>
       <button type="submit">
