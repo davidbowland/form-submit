@@ -92,6 +92,9 @@ var formSubmit = new function() {
       value = el.value,
       radioButton,
       elementType = el.type.toLowerCase();
+    // Nothing to return if no validation function is registered
+    if (!callback) {
+      return undefined; }
     // Only validate selected radio buttons
     if (elementType == 'radio') {
       if (radioButton = el.form.querySelector('[name="' + el.name + '"]:checked')) {
@@ -106,9 +109,8 @@ var formSubmit = new function() {
     } else if (el.tagName.toUpperCase() == 'SELECT') {
       value = el.querySelector(':checked').value;
     }
-    if (callback) {
-      return callback(value, el); }
-    return undefined;
+    // Invoke the registered callback
+    return callback(value, el);
   };
   
   self.isValid = function(el) {
