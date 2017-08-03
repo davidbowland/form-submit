@@ -118,7 +118,6 @@ var formSubmit = new function() {
   };
 
   self.displayErrorMessage = function(el, msg) {
-    self.removeErrorMessage(el);
     self.getErrorMessageElement(el).textContent = msg; // Add msg
     return self;
   };
