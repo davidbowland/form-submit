@@ -125,6 +125,10 @@ This script supports being loaded `defer`.
    ex: `formSubmit.getErrorMessageElement(document.getElementById('fnord'))`
    * Returns the element that will contain the error message of the passed element, *creating the element if necessary*
 
+* `formSubmit.hasValidContents(<element>)`  
+   ex: `formSubmit.hasValidContents(document.querySelector('form'))`
+   * Returns true if the named fields contained within the passed element have valid values, otherwise false
+
 * `formSubmit.addCounter(<element, NodeList, or query selector string>, <maxlength>)`  
    ex: `formSubmit.addCounter(document.getElementById('fnord'))` or `formSubmit.addCounter(document.getElementById('fnord'), 100)`
    * Adds a character counter to an element (input, textarea), all elements in a [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList), or all elements identified by a [query selector string](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll), with an optional maximum count specified  

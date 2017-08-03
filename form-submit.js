@@ -147,6 +147,23 @@ var formSubmit = new function() {
     return target;
   };
 
+  self.hasValidContents = function(el) {
+    var fields = el.querySelectorAll('[name]');
+    // Return true if there are no fields to validate
+    if (!fields.length) {
+      return true;
+    // If this form is set to always allow then contents are valid
+    } else if (attrPresentNotFalse(fields[0].form || el, 'data-form-submit-always-allow')) {
+      return true;
+    }
+    // Validate all fields
+    for (var el, x = 0; el = fields[x]; x++) {
+      if (!self.isValid(el)) {
+        return false; }
+    }
+    return true; // No fields were invalid
+  };
+
   self.addCounter = function(selector, maxlength) {
     applySelector(selector, self.addCounterSingleElement, maxlength);
     return self;
