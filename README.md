@@ -98,8 +98,8 @@ This script supports being loaded `defer`.
 
 * `formSubmit.addRadioValidation(<element>, <callback(value, element)>)`  
    ex: `formSubmit.addRadioValidation(document.getElementById('fnord'), function(value) { return value === undefined ? 'Please make a selection' : ''; })`
-   * Adds validation to a radio button group (grouped by name)  
-   The value passed to the callback is `undefined` if no value is selected.
+   * Adds validation to a radio button group (grouped by name)
+   * The value passed to the callback is `undefined` if no value is selected
 
 * `formSubmit.removeRadioValidation(<element>)`  
    ex: `formSubmit.removeRadioValidation(document.getElementById('fnord'))`
@@ -132,7 +132,8 @@ This script supports being loaded `defer`.
 * `formSubmit.addCounter(<element, NodeList, or query selector string>, <maxlength>)`  
    ex: `formSubmit.addCounter(document.getElementById('fnord'))` or `formSubmit.addCounter(document.getElementById('fnord'), 100)`
    * Adds a character counter to an element (input, textarea), all elements in a [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList), or all elements identified by a [query selector string](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll), with an optional maximum count specified  
-   If the max count is not specified it will be taken from properties. Property `data-form-submit-count` is added if not present.
+   * If the max count is not specified it will be taken from properties
+   * Property `data-form-submit-count` is added if not present
 
 * `formSubmit.removeCounter(<element, NodeList, or query selector string>)`  
    ex: `formSubmit.removeCounter(document.getElementById('fnord'))`
@@ -153,8 +154,8 @@ This script supports being loaded `defer`.
 
 * `formSubmit.validation.isNumber(<value>)`  
    ex: `formSubmit.validation.isNumber('-123.456')`
-   * Returns true if the value is a positive or negative number, otherwise returns false  
-   Numbers have an optional leading negative, an optional decimal, optional comma separators, and otherwise are digits.
+   * Returns true if the value is a positive or negative number, otherwise returns false
+   * Numbers have an optional leading negative, an optional decimal, optional comma separators, and otherwise are digits
 
 * `formSubmit.validation.isCurrency(<value>)`  
    ex: `formSubmit.validation.isCurrency('-987.65')`
@@ -162,8 +163,9 @@ This script supports being loaded `defer`.
 
 * `formSubmit.validation.isPhone(<value>, [format], [generalSeparators])`  
    ex: `formSubmit.validation.isPhone('(123)456-7890')` or `formSubmit.validation.isPhone('123-456-7890', '900-900-0000')`
-   * Returns true if the value matches the phone format, otherwise returns false  
-   Format string uses `0` for any digit and `9` for digits excluding zero. General separator argument should be true if non-digits in the format string should be ignored.
+   * Returns true if the value matches the phone format, otherwise returns false
+   * Format string uses `0` for any digit and `9` for digits excluding zero
+   * General separator argument should be true if non-digits in the format string should be ignored
 
 * `formSubmit.validation.isZip(<value>)`  
    ex: `formSubmit.validation.isZip('90210')`
@@ -175,8 +177,9 @@ This script supports being loaded `defer`.
 
 * `formSubmit.validation.isTimestamp(<value>, [format], [generalSeparators])`  
    ex: `formSubmit.validation.isTimestamp('01/01/2001 08:00:00.000000')` or `formSubmit.validation.isTimestamp('01/01/2001', 'mm/dd/yyyy')`
-   * Returns true if the value matches the time stamp format (default: `mm/dd/yyyy HH:MM:SS.MS`), otherwise returns false  
-   General separator argument should be true if non-digits in the format string should be ignored. Format string allows the following placeholders, which are case-sensitive:
+   * Returns true if the value matches the time stamp format (default: `mm/dd/yyyy HH:MM:SS.MS`), otherwise returns false
+   * General separator argument should be true if non-digits in the format string should be ignored
+   * Format string allows the following placeholders, which are case-sensitive:
       * `m` - Month, either one or two digits
       * `mm` - Month, exactly two digits
       * `d` - Day, either one or two digits
@@ -195,33 +198,35 @@ This script supports being loaded `defer`.
 
 * `formSubmit.validation.isDate(<value>, [format], [generalSeparators])`  
    ex: `formSubmit.validation.isDate('01/01/2001')` or `formSubmit.validation.isDate('1/1/01', 'm/d/yy')`
-   * Returns true if the value matches the date format (default: `mm/dd/yyyy`), otherwise returns false  
-   See `isTimestamp` for format string values. General separator argument should be true if non-digits in the format string should be ignored.
+   * Returns true if the value matches the date format (default: `mm/dd/yyyy`), otherwise returns false
+   * See `isTimestamp` for format string values
+   * General separator argument should be true if non-digits in the format string should be ignored
 
 * `formSubmit.validation.isTime(<value>, [format], [generalSeparators])`  
    ex: `formSubmit.validation.isTime('08:20')` or `formSubmit.validation.isTime('8:20', 'H:MM')`
-   * Returns true if the value matches the time format (default: `HH24:MM`), otherwise returns false  
-   See `isTimestamp` for format string values. General separator argument should be true if non-digits in the format string should be ignored.
+   * Returns true if the value matches the time format (default: `HH24:MM`), otherwise returns false
+   * See `isTimestamp` for format string values
+   * General separator argument should be true if non-digits in the format string should be ignored
 
 * `formSubmit.validation.formatDigits(<value>, [format])`  
    ex: `formSubmit.validation.formatDigits('123')` or `formSubmit.validation.formatDigits('123', '00000')`
-   * Returns the value formatted to pass `isDigits`  
-   Digits in the format string, when provided, are replaced by digits in the value until either is exhausted.
+   * Returns the value formatted to pass `isDigits`
+   * Digits in the format string, when provided, are replaced by digits in the value until either is exhausted
 
 * `formSubmit.validation.formatNumber(<value>)`  
    ex: `formSubmit.validation.formatNumber('-123.456')`
-   * Returns the value formatted to pass `isNumber`  
-   This function adds comma separators. Use `formatDigits` for finer control over output.
+   * Returns the value formatted to pass `isNumber`
+   * This function adds comma separators, use `formatDigits` for finer control over output
 
 * `formSubmit.validation.formatCurrency(<value>)`  
    ex: `formSubmit.validation.formatCurrency('-987.65')`
-   * Returns the value formatted to pass `isCurrency`  
-   This function adds comma separators. Use `formatDigits` for finer control over output.
+   * Returns the value formatted to pass `isCurrency`
+   * This function adds comma separators, use `formatDigits` for finer control over output
 
 * `formSubmit.validation.formatPhone(<value> ,[format])`  
    ex: `formSubmit.validation.formatPhone('(123)456-7890')` or `formSubmit.validation.formatPhone('123-456-7890', '000-000-0000')`
    * Returns the value formatted to pass `isPhone`  
-   Digits in the format string, when provided, are replaced by digits in the value until either is exhausted.
+   * Digits in the format string, when provided, are replaced by digits in the value until either is exhausted
 
 * `formSubmit.validation.formatZip(<value>)`  
    ex: `formSubmit.validation.formatZip('123')`
@@ -230,14 +235,17 @@ This script supports being loaded `defer`.
 * `formSubmit.validation.formatTimestamp(<value>, [format])`  
    ex: `formSubmit.validation.formatTimestamp('01/01/2001 08:00:00.000000')` or `formSubmit.validation.formatTimestamp('01/01/2001', 'mm/dd/yyyy')`
    * Returns the value formatted to pass `isTimestamp`  
-   Placeholders in the format string, when provided (default: `mm/dd/yyyy HH:MM:SS.MS`), are replaced by digits in the value until either is exhausted. See `isTimestamp` for a list of valid placeholders.
+   * Placeholders in the format string, when provided (default: `mm/dd/yyyy HH:MM:SS.MS`), are replaced by digits in the value until either is exhausted
+   * See `isTimestamp` for a list of valid placeholders
 
 * `formSubmit.validation.formatDate(<value>, [format])`  
    ex: `formSubmit.validation.formatDate('01/01/2001')` or `formSubmit.validation.formatDate('1/1/01', 'm/d/yy')`
    * Returns the value formatted to pass `isDate`  
-   Placeholders in the format string, when provided (default: `mm/dd/yyyy`), are replaced by digits in the value until either is exhausted. See `isTimestamp` for a list of valid placeholders.
+   * Placeholders in the format string, when provided (default: `mm/dd/yyyy`), are replaced by digits in the value until either is exhausted
+   * See `isTimestamp` for a list of valid placeholders
 
 * `formSubmit.validation.formatTime(<value>, [format])`  
    ex: `formSubmit.validation.formatTime('08:20')` or `formSubmit.validation.formatTime('8:20', 'H:MM')`
    * Returns the value formatted to pass `isTime`  
-   Placeholders in the format string, when provided (default: `HH24:MM`), are replaced by digits in the value until either is exhausted. See `isTimestamp` for a list of valid placeholders.
+   * Placeholders in the format string, when provided (default: `HH24:MM`), are replaced by digits in the value until either is exhausted
+   * See `isTimestamp` for a list of valid placeholders
