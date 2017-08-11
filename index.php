@@ -206,7 +206,7 @@ input[type="text"], textarea {
         <input type="text" name="regex" placeholder="pizza pizza" data-form-submit-regex="([a-zA-Z]+)\W*(\1)" />
       </div>
       <div>
-        Enter two words so the left word comes first alphabetically:
+        Enter two words so the top word comes first alphabetically:
         <input type="text" name="alpha-left" id="alpha-left" data-form-submit-group="alpha-input" />
         <input type="text" name="alpha-right" id="alpha-right" data-form-submit-group="alpha-input" />
         <div data-form-submit-error-for="alpha-input"></div>
