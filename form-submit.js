@@ -51,9 +51,13 @@ var formSubmit = new function() {
   self.addValidationSingleElement = function(el, callback) {
     self.removeValidationSingleElement(el);
     validationCallbacks[getUniqueID(el)] = callback;
-    el.addEventListener('change', fieldValidationEvent);
-    el.addEventListener('blur', fieldValidationEvent);
-    addFormValidation(el.form);
+    if (el.tagName.toLowerCase() == 'form') {
+      el.addEventListener('submit', fieldValidationEvent);
+    } else {
+      el.addEventListener('change', fieldValidationEvent);
+      el.addEventListener('blur', fieldValidationEvent);
+      addFormValidation(el.form);
+    }
     return self;
   };
 
@@ -63,8 +67,12 @@ var formSubmit = new function() {
   };
 
   self.removeValidationSingleElement = function(el) {
-    el.removeEventListener('change', fieldValidationEvent);
-    el.removeEventListener('blur', fieldValidationEvent);
+    if (el.tagName.toLowerCase() == 'form') {
+      el.removeEventListener('submit', fieldValidationEvent);
+    } else {
+      el.removeEventListener('change', fieldValidationEvent);
+      el.removeEventListener('blur', fieldValidationEvent);
+    }
     delete validationCallbacks[getUniqueID(el)];
     removeFormValidation(el.form);
     self.removeErrorMessage(el);
@@ -91,7 +99,7 @@ var formSubmit = new function() {
     var callback = validationCallbacks[getUniqueID(el)],
       value = el.value,
       radioButton,
-      elementType = el.type.toLowerCase();
+      elementType = (el.type || '').toLowerCase();
     // Nothing to return if no validation function is registered
     if (!callback) {
       return undefined; }
@@ -136,7 +144,7 @@ var formSubmit = new function() {
       target = document.createElement('span');
       target.className = 'form-submit-error';
       target.setAttribute('data-form-submit-error-for', el.getAttribute('data-form-submit-group') || el.id || el.name);
-      if (el.type.toLowerCase() == 'radio') {
+      if ((el.type || '').toLowerCase() == 'radio') {
         radios = el.form.querySelectorAll('[name="' + el.name + '"]')
         insertBeforeElement = radios[radios.length - 1].nextElementSibling;
       } else {
@@ -480,7 +488,8 @@ var formSubmit = new function() {
   };
 
   var formValidationEvent = function(ev) {
-    var fields = ev.currentTarget.querySelectorAll('[name]'),
+    var form = ev.currentTarget,
+        fields = form.querySelectorAll('[name]'),
         valid = true;
     // If this form is set to always allow then we're done here
     if (attrPresentNotFalse(ev.currentTarget, 'data-form-submit-always-allow')) {
@@ -494,6 +503,11 @@ var formSubmit = new function() {
           el.focus(); // Set focus on the first invalid field
         }
       }
+    }
+    // Validate the form itself
+    if (msg = self.getErrorMessage(form)) {
+      self.displayErrorMessage(form, msg);
+      valid = false;
     }
     // Prevent form submission if invalid input was found
     if (!valid) {

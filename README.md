@@ -89,12 +89,13 @@ This script supports being loaded `defer`.
 
 * `formSubmit.addValidation(<element, NodeList, or query selector string>, <callback(value, element)>)`  
    ex: `formSubmit.addValidation(document.getElementById('fnord'), function(value) { return value.length == 0 ? 'Please enter a value' : ''; })`
-   * Adds validation to an element (input, textarea, select), all elements in a [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList), or all elements identified by a [query selector string](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll)  
-   The callback is called using the current value and the element itself and should return either an error message or an empty string (false value).
+   * Adds validation to an element (input, textarea, select), all elements in a [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList), or all elements identified by a [query selector string](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll)
+   * A form can also be used as the element, but caution must be taken to direct error message output (consider dynamically assigning `data-form-submit-error-for`)
+   * The callback is called using the current value and the element itself, and should return either an error message or an empty string (false value)
 
 * `formSubmit.removeValidation(<element, NodeList, or query selector string>)`  
    ex: `formSubmit.removeValidation(document.getElementById('fnord'))`
-   * Removes validation from an element (input, textarea, select), all elements in a [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList), or all elements identified by a [query selector string](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll)
+   * Removes validation from an element (input, textarea, select, form), all elements in a [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList), or all elements identified by a [query selector string](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll)
 
 * `formSubmit.addRadioValidation(<element>, <callback(value, element)>)`  
    ex: `formSubmit.addRadioValidation(document.getElementById('fnord'), function(value) { return value === undefined ? 'Please make a selection' : ''; })`
