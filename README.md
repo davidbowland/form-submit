@@ -40,7 +40,7 @@ This script supports being loaded `defer`.
    * `url-http` - Field requires a URL using either http or https  
       *includes limited user assistance, adds scheme*
    * `url-path`- Field requires the path portion of a URL (after /)  
-      *includes limited user assistance, removes leaving /*
+      *includes limited user assistance, removes leading /*
    * `hostname` - Field requires a hostname that conforms to RFC 1035 (<https://www.ietf.org/rfc/rfc1035.txt>), excluding localhost  
       *includes user assistance*
    * `domain` - Field requires a domain name that conforms to RFC 1035 (<https://www.ietf.org/rfc/rfc1035.txt>), excluding localhost  
@@ -85,7 +85,7 @@ This script supports being loaded `defer`.
    * `url-http` - Field requires a URL using either http or https  
       *includes limited user assistance, adds scheme*
    * `url-path`- Field requires the path portion of a URL (after /)  
-      *includes limited user assistance, removes leaving /*
+      *includes limited user assistance, removes leading /*
    * `hostname` - Field requires a hostname that conforms to RFC 1035 (<https://www.ietf.org/rfc/rfc1035.txt>), excluding localhost  
       *includes user assistance*
    * `domain` - Field requires a domain name that conforms to RFC 1035 (<https://www.ietf.org/rfc/rfc1035.txt>), excluding localhost  
@@ -278,7 +278,7 @@ This script supports being loaded `defer`.
 
 * `formSubmit.validation.isURLPath(<value>)`  
    ex: `formSubmit.validation.isURLPath('form-submit/')`
-   * Returns true if the value matches RFC 3986 (https://tools.ietf.org/html/rfc3986#appendix-A) and uses http or https, otherwise returns false
+   * Returns true if the value matches RFC 3986 (https://tools.ietf.org/html/rfc3986#appendix-A) for paths, otherwise returns false
 
 * `formSubmit.validation.isHostname(<value>)`  
    ex: `formSubmit.validation.isHostname('www.dowland.com')`
@@ -305,7 +305,7 @@ This script supports being loaded `defer`.
    * Returns true if the value is an 8-19 digit number that passes Luhn's algorithm, optionally in groups of at least four, separated by a space, otherwise returns false  
 
 * `formSubmit.validation.isCVV(<value>)`  
-   ex: `formSubmit.validation.isCreditCard('4111 1111 1111 1111')`
+   ex: `formSubmit.validation.isCVV('123')`
    * Returns true if the value is three digits in the format `000`, otherwise returns false  
 
 * `formSubmit.validation.formatDigits(<value>, [format])`  
@@ -374,12 +374,12 @@ This script supports being loaded `defer`.
    * Returns the value without scheme or invalid characters but that *may fail* `isHostname`
 
 * `formSubmit.validation.formatDomain(<value>)`  
-   ex: `formSubmit.validation.formatDomain('dbowland.com/')`
+   ex: `formSubmit.validation.formatDomain('dbowland.com')`
    * Returns the value without scheme, invalid characters, or sub-domains but that *may fail* `isDomain`
 
 * `formSubmit.validation.formatIPAddress(<value>)`  
    ex: `formSubmit.validation.formatIPAddress('127.0.0.1')`
-   * Returns the value formatted to pass `isIPAddress` or formatted until digits are exhausted
+   * Returns the value formatted to pass `isIPAddress`, stopping when the value is exhausted (missing digits are not added)
 
 * `formSubmit.validation.formatSSN(<value>, [format])`  
    ex: `formSubmit.validation.formatSSN('123-45-6789')` or `formSubmit.validation.formatSSN('123-45-6789', '000-00-0000')`
