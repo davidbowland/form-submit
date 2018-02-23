@@ -12,6 +12,7 @@ This script supports being loaded `defer`.
 * `data-form-submit-required`  
    *Specify error text with `data-form-submit-error-msg`. Placeholders are added when the attribute is absent.*
    * `true` - Field requires a value to be validated
+   * `radio` - Radio button group that requires a selection
    * `digits` - Field requires digits and requires at least one  
       *includes user assistance*
    * `number` - Field requires digits with optional decimal and optional leading negative  
@@ -31,7 +32,6 @@ This script supports being loaded `defer`.
       *includes user assistance*
    * `time` - Field requires a time in the format `HH24:MM`  
       *includes user assistance*
-   * `radio` - Radio button group that requires a selection
 
 * `data-form-submit-optional`  
    *Optional fields require either a valid value or no value. Specify error text with `data-form-submit-error-msg`. Placeholders are added when the attribute is absent.*
@@ -224,7 +224,7 @@ This script supports being loaded `defer`.
    * Returns the value formatted to pass `isCurrency`
    * This function adds comma separators, use `formatDigits` for finer control over output
 
-* `formSubmit.validation.formatPhone(<value> ,[format])`  
+* `formSubmit.validation.formatPhone(<value>, [format])`  
    ex: `formSubmit.validation.formatPhone('(123)456-7890')` or `formSubmit.validation.formatPhone('123-456-7890', '000-000-0000')`
    * Returns the value formatted to pass `isPhone`  
    * Digits in the format string, when provided, are replaced by digits in the value until either is exhausted
