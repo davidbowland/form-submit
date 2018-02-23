@@ -23,7 +23,11 @@ This script supports being loaded `defer`.
       *includes user assistance*
    * `zip` - Field requires five digits in the format `00000`  
       *includes user assistance*
-   * `email` - Field requires a potential email address (guaranteed to have @ sign and valid domain, user name not validated)
+   * `zip+4` - Field requires five digits in the format `00000` or nine digits in the format `00000-0000`  
+      *includes user assistance*
+   * `zip-full` - Field requires nine digits in the format `00000-0000`  
+      *includes user assistance*
+   * `email` - Field requires a potential email address (@ sign and valid format domain, not localhost or ip, but user name not validated)
    * `timestamp` - Field requires a timestamp in the format `mm/dd/yyyy HH24:MM:SS.MS`  
       *includes user assistance*
    * `date-mmddyyyy` - Field requires a date in the format `mm/dd/yyyy`  
@@ -31,6 +35,25 @@ This script supports being loaded `defer`.
    * `date-yyyymmdd` - Field requires a date in the format `yyyy-mm-dd`  
       *includes user assistance*
    * `time` - Field requires a time in the format `HH24:MM`  
+      *includes user assistance*
+   * `url` - Field requires a URL that conforms to RFC 3986 (<https://tools.ietf.org/html/rfc3986#appendix-A>)
+   * `url-http` - Field requires a URL using either http or https  
+      *includes limited user assistance, adds scheme*
+   * `url-path`- Field requires the path portion of a URL (after /)  
+      *includes limited user assistance, removes leaving /*
+   * `hostname` - Field requires a hostname that conforms to RFC 1035 (<https://www.ietf.org/rfc/rfc1035.txt>), excluding localhost  
+      *includes user assistance*
+   * `domain` - Field requires a domain name that conforms to RFC 1035 (<https://www.ietf.org/rfc/rfc1035.txt>), excluding localhost  
+      *includes user assistance*
+   * `ip-address` - Field requires an IPv4 address  
+      *includes user assistance*
+   * `ssn` - Field requires nine digits in the format `000-00-0000`  
+      *includes user assistance*
+   * `aba-routing` - Field requires an ABA routing number (valid format and checksum)  
+      *includes user assistance*
+   * `credit-card` - Field requires an 8-19 digit number that passes Luhn's algorithm, optionally in groups of at least four, separated by a space  
+      *includes user assistance*
+   * `cvv` - Field requires three digits in the format `000`  
       *includes user assistance*
 
 * `data-form-submit-optional`  
@@ -45,7 +68,11 @@ This script supports being loaded `defer`.
       *includes user assistance*
    * `zip` - Field requires five digits in the format `00000`  
       *includes user assistance*
-   * `email` - Field requires a potential email address (guaranteed to have @ sign and valid domain, user name not validated)
+   * `zip+4` - Field requires five digits in the format `00000` or nine digits in the format `00000-0000`  
+      *includes user assistance*
+   * `zip-full` - Field requires nine digits in the format `00000-0000`  
+      *includes user assistance*
+   * `email` - Field requires a potential email address (@ sign and valid format domain, not localhost or ip, but user name not validated)
    * `timestamp` - Field requires a timestamp in the format `mm/dd/yyyy HH24:MM:SS.MS`  
       *includes user assistance*
    * `date-mmddyyyy` - Field requires a date in the format `mm/dd/yyyy`  
@@ -53,6 +80,25 @@ This script supports being loaded `defer`.
    * `date-yyyymmdd` - Field requires a date in the format `yyyy-mm-dd`  
       *includes user assistance*
    * `time` - Field requires a time in the format `HH24:MM`  
+      *includes user assistance*
+   * `url` - Field requires a URL that conforms to RFC 3986 (<https://tools.ietf.org/html/rfc3986#appendix-A>)
+   * `url-http` - Field requires a URL using either http or https  
+      *includes limited user assistance, adds scheme*
+   * `url-path`- Field requires the path portion of a URL (after /)  
+      *includes limited user assistance, removes leaving /*
+   * `hostname` - Field requires a hostname that conforms to RFC 1035 (<https://www.ietf.org/rfc/rfc1035.txt>), excluding localhost  
+      *includes user assistance*
+   * `domain` - Field requires a domain name that conforms to RFC 1035 (<https://www.ietf.org/rfc/rfc1035.txt>), excluding localhost  
+      *includes user assistance*
+   * `ip-address` - Field requires an IPv4 address  
+      *includes user assistance*
+   * `ssn` - Field requires nine digits in the format `000-00-0000`  
+      *includes user assistance*
+   * `aba-routing` - Field requires an ABA routing number (valid format and checksum)  
+      *includes user assistance*
+   * `credit-card` - Field requires an 8-19 digit number that passes Luhn's algorithm, optionally in groups of at least four, separated by a space  
+      *includes user assistance*
+   * `cvv` - Field requires three digits in the format `000`  
       *includes user assistance*
 
 * `data-form-submit-group`  
@@ -149,9 +195,11 @@ This script supports being loaded `defer`.
    * Removes all validation and counter events  
 
 #### Validation API
-* `formSubmit.validation.isDigits(<value>)`  
-   ex: `formSubmit.validation.isDigits('123')`
-   * Returns true if the value contains only digits, otherwise returns false
+* `formSubmit.validation.isDigits(<value>, [format], [generalSeparators])`  
+   ex: `formSubmit.validation.isDigits('123')` or `formSubmit.validation.isDigits('10-34', '90-00')`
+   * Returns true if the value contains only digits or matches the format string, otherwise returns false
+   * Format string uses `0` for any digit and `9` for digits excluding zero
+   * General separator argument should be true if non-digits in the format string should be ignored
 
 * `formSubmit.validation.isNumber(<value>)`  
    ex: `formSubmit.validation.isNumber('-123.456')`
@@ -168,9 +216,20 @@ This script supports being loaded `defer`.
    * Format string uses `0` for any digit and `9` for digits excluding zero
    * General separator argument should be true if non-digits in the format string should be ignored
 
-* `formSubmit.validation.isZip(<value>)`  
+* `formSubmit.validation.isZip(<value>, [format])`  
    ex: `formSubmit.validation.isZip('90210')`
-   * Returns true if the value is exactly five digits, otherwise returns false
+   * Returns true if the value is five digits or matches the format string, otherwise returns false
+   * Format string uses `0` for any digit and `9` for digits excluding zero
+
+* `formSubmit.validation.isZipPlus4(<value>, [format])`  
+   ex: `formSubmit.validation.isZipPlus4('90210')` or `formSubmit.validation.isZipPlus4('90210-0000')`
+   * Returns true if the value is five digits or nine digits in ZIP+4 format or matches the format string, otherwise returns false
+   * Format string uses `0` for any digit and `9` for digits excluding zero
+
+* `formSubmit.validation.isZipFull(<value>, [format])`  
+   ex: `formSubmit.validation.isZipFull('90210-0000')`
+   * Returns true if the value is nine digits in ZIP+4 format or matches the format string, otherwise returns false
+   * Format string uses `0` for any digit and `9` for digits excluding zero
 
 * `formSubmit.validation.isEmail(<value>)`  
    ex: `formSubmit.validation.isEmail('user@domain.com')`
@@ -209,6 +268,46 @@ This script supports being loaded `defer`.
    * See `isTimestamp` for format string values
    * General separator argument should be true if non-digits in the format string should be ignored
 
+* `formSubmit.validation.isURL(<value>)`  
+   ex: `formSubmit.validation.isURL('https://dbowland.com/')` or `formSubmit.validation.isURL('ftp://dbowland.com/')`
+   * Returns true if the value matches RFC 3986 (https://tools.ietf.org/html/rfc3986#appendix-A), otherwise returns false
+
+* `formSubmit.validation.isURLHTTP(<value>)`  
+   ex: `formSubmit.validation.isURLHTTP('https://dbowland.com/')`
+   * Returns true if the value matches RFC 3986 (https://tools.ietf.org/html/rfc3986#appendix-A) and uses http or https, otherwise returns false
+
+* `formSubmit.validation.isURLPath(<value>)`  
+   ex: `formSubmit.validation.isURLPath('form-submit/')`
+   * Returns true if the value matches RFC 3986 (https://tools.ietf.org/html/rfc3986#appendix-A) and uses http or https, otherwise returns false
+
+* `formSubmit.validation.isHostname(<value>)`  
+   ex: `formSubmit.validation.isHostname('www.dowland.com')`
+   * Returns true if the value conforms to RFC 1035 (<https://www.ietf.org/rfc/rfc1035.txt>), excluding localhost  
+
+* `formSubmit.validation.isDomain(<value>)`  
+   ex: `formSubmit.validation.isHostname('dbowland.com')`
+   * Returns true if the value conforms to RFC 1035 (<https://www.ietf.org/rfc/rfc1035.txt>), excluding localhost  
+
+* `formSubmit.validation.isIPAddress(<value>)`  
+   ex: `formSubmit.validation.isIPAddress('127.0.0.1')`
+   * Returns true if the value is a valid IPv4 address, otherwise returns false  
+
+* `formSubmit.validation.isSSN(<value>)`  
+   ex: `formSubmit.validation.isSSN('000-00-0000')`
+   * Returns true if the value is nine digits in the format `000-00-0000`, otherwise returns false  
+
+* `formSubmit.validation.isABARouting(<value>)`  
+   ex: `formSubmit.validation.isABARouting('011000015')`
+   * Returns true if the value is an ABA routing number (valid checksum), otherwise returns false  
+
+* `formSubmit.validation.isCreditCard(<value>)`  
+   ex: `formSubmit.validation.isCreditCard('4111 1111 1111 1111')`
+   * Returns true if the value is an 8-19 digit number that passes Luhn's algorithm, optionally in groups of at least four, separated by a space, otherwise returns false  
+
+* `formSubmit.validation.isCVV(<value>)`  
+   ex: `formSubmit.validation.isCreditCard('4111 1111 1111 1111')`
+   * Returns true if the value is three digits in the format `000`, otherwise returns false  
+
 * `formSubmit.validation.formatDigits(<value>, [format])`  
    ex: `formSubmit.validation.formatDigits('123')` or `formSubmit.validation.formatDigits('123', '00000')`
    * Returns the value formatted to pass `isDigits`
@@ -229,9 +328,20 @@ This script supports being loaded `defer`.
    * Returns the value formatted to pass `isPhone`  
    * Digits in the format string, when provided, are replaced by digits in the value until either is exhausted
 
-* `formSubmit.validation.formatZip(<value>)`  
-   ex: `formSubmit.validation.formatZip('123')`
+* `formSubmit.validation.formatZip(<value>, [format])`  
+   ex: `formSubmit.validation.formatZip('123456')` or `formSubmit.validation.formatZip('123456', '00000')`
    * Returns the value formatted to pass `isZip`, stopping when the value is exhausted (missing digits are not added)
+   * Digits in the format string, when provided, are replaced by digits in the value until either is exhausted
+
+* `formSubmit.validation.formatZipPlus4(<value>, [format])`  
+   ex: `formSubmit.validation.formatZipPlus4('123456')` or `formSubmit.validation.formatZipPlus4('123456', '00000')`
+   * Returns the value formatted to pass `isZipPlus4`, stopping when the value is exhausted (missing digits are not added)
+   * Digits in the format string, when provided, are replaced by digits in the value until either is exhausted
+
+* `formSubmit.validation.formatZipFull(<value>, [format])`  
+   ex: `formSubmit.validation.formatZipFull('123456')` or `formSubmit.validation.formatZipFull('123456', '00000')`
+   * Returns the value formatted to pass `isZipFull`, stopping when the value is exhausted (missing digits are not added)
+   * Digits in the format string, when provided, are replaced by digits in the value until either is exhausted
 
 * `formSubmit.validation.formatTimestamp(<value>, [format])`  
    ex: `formSubmit.validation.formatTimestamp('01/01/2001 08:00:00.000000')` or `formSubmit.validation.formatTimestamp('01/01/2001', 'mm/dd/yyyy')`
@@ -250,3 +360,43 @@ This script supports being loaded `defer`.
    * Returns the value formatted to pass `isTime`  
    * Placeholders in the format string, when provided (default: `HH24:MM`), are replaced by digits in the value until either is exhausted
    * See `isTimestamp` for a list of valid placeholders
+
+* `formSubmit.validation.formatURLHTTP(<value>)`  
+   ex: `formSubmit.validation.formatURLHTTP('https://dbowland.com/')`
+   * Returns the value with either http or https scheme but that *may fail* `isURLHTTP`
+
+* `formSubmit.validation.formatURLPath(<value>)`  
+   ex: `formSubmit.validation.formatURLPath('form-submit/')`
+   * Returns the value without leading / but that *may fail* `isURLPath`
+
+* `formSubmit.validation.formatHostname(<value>)`  
+   ex: `formSubmit.validation.formatHostname('www.dbowland.com')`
+   * Returns the value without scheme or invalid characters but that *may fail* `isHostname`
+
+* `formSubmit.validation.formatDomain(<value>)`  
+   ex: `formSubmit.validation.formatDomain('dbowland.com/')`
+   * Returns the value without scheme, invalid characters, or sub-domains but that *may fail* `isDomain`
+
+* `formSubmit.validation.formatIPAddress(<value>)`  
+   ex: `formSubmit.validation.formatIPAddress('127.0.0.1')`
+   * Returns the value formatted to pass `isIPAddress` or formatted until digits are exhausted
+
+* `formSubmit.validation.formatSSN(<value>, [format])`  
+   ex: `formSubmit.validation.formatSSN('123-45-6789')` or `formSubmit.validation.formatSSN('123-45-6789', '000-00-0000')`
+   * Returns the value formatted to pass `isSSN`, stopping when the value is exhausted (missing digits are not added)
+   * Digits in the format string, when provided, are replaced by digits in the value until either is exhausted
+
+* `formSubmit.validation.formatABARouting(<value>, [format])`  
+   ex: `formSubmit.validation.formatABARouting('011000015')` or `formSubmit.validation.formatABARouting('011000015', '000000000')`
+   * Returns the value formatted to pass `isABARouting`, stopping when the value is exhausted (missing digits are not added)
+   * Digits in the format string, when provided, are replaced by digits in the value until either is exhausted
+
+* `formSubmit.validation.formatCreditCard(<value>, [format])`  
+   ex: `formSubmit.validation.formatCreditCard('4111 1111 1111 1111')` or `formSubmit.validation.formatCreditCard('4111 1111 1111 1111', '0000 0000 0000 0000')`
+   * Returns the value formatted to pass `isCreditCard`, stopping when the value is exhausted (missing digits are not added)
+   * Digits in the format string, when provided, are replaced by digits in the value until either is exhausted
+
+* `formSubmit.validation.formatCVV(<value>, [format])`  
+   ex: `formSubmit.validation.formatCVV('123')` or `formSubmit.validation.formatCVV('123', '000')`
+   * Returns the value formatted to pass `isCVV`, stopping when the value is exhausted (missing digits are not added)
+   * Digits in the format string, when provided, are replaced by digits in the value until either is exhausted

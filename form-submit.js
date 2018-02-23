@@ -34,11 +34,23 @@ var formSubmit = new function() {
         'currency': '0.00',
         'phone': '(000)000-0000',
         'zip': '00000',
+        'zip+4': '00000-0000',
+        'zip-full': '00000-0000',
         'email': 'user@domain.com',
+        'url': 'https://www.domain.com/',
+        'url-http': 'https://www.domain.com/',
+        'url-part': 'path/to/resource.html',
+        'hostname': 'www.domain.com',
+        'domain': 'domain.com',
+        'ip-address': '0.0.0.0',
         'timestamp': 'mm/dd/yyyy hh:mm:ss.ms',
         'date-mmddyyyy': 'mm/dd/yyyy',
         'date-yyyymmdd': 'yyyy-mm-dd',
-        'time': 'hh:mm'
+        'time': 'hh:mm',
+        'aba-routing': '000000000',
+        'credit-card': '0000 0000 0000 0000',
+        'cvv': '000',
+        'ssn': '000-00-0000'
       };
 
 
@@ -235,28 +247,38 @@ var formSubmit = new function() {
   self.validation = new function() {
     var vself = this;
 
-    vself.isDigits = function(value) {
-      return value.search(/^\d+$/) >= 0;
-    };
-    vself.isNumber = function(value) {
-      return value.search(/^\-?((\d{1,3}(,?\d{3})*)\.?\d*|(\d{1,3}(,?\d{3})*)?\.\d+)$/) >= 0;
-    };
-    vself.isCurrency = function(value) {
-      return value.search(/^\-?((\d{1,3}(,?\d{3})*)?\.\d\d)$/) >= 0;
-    };
-    vself.isPhone = function(value, format, generalSeparators) {
-      var regexStr = (format || '(000)000-0000').replace(/0|9|.+?/g,
+    vself.isDigits = function(value, format, generalSeparators) {
+      var regexStr;
+      if (!format) {
+        return !value.search(/^\d+$/);
+      }
+      regexStr = format.replace(/0|9|.+?/g,
         function(item) {
           return (regexPhoneValues[item] ||
                  (generalSeparators ? '\\D*?' : item.replace(/(\W)/g, '\\$1')));
         });
       return (new RegExp('^' + regexStr + '$')).test(value);
     };
-    vself.isZip = function(value) {
-      return value.search(/^\d{5}$/) >= 0;
+    vself.isNumber = function(value) {
+      return !value.search(/^\-?((\d{1,3}(,?\d{3})*)\.?\d*|(\d{1,3}(,?\d{3})*)?\.\d+)$/);
+    };
+    vself.isCurrency = function(value) {
+      return !value.search(/^\-?((\d{1,3}(,?\d{3})*)?\.\d\d)$/);
+    };
+    vself.isPhone = function(value, format, generalSeparators) {
+      return vself.isDigits(value, format || '(000)000-0000', generalSeparators);
+    };
+    vself.isZip = function(value, format) {
+      return vself.isDigits(value, format || '00000');
+    };
+    vself.isZipPlus4 = function(value, format) {
+      return vself.isZip(value, format) || vself.isZipFull(value);
+    };
+    vself.isZipFull = function(value, format) {
+      return vself.isDigits(value, format || '00000-0000');
     };
     vself.isEmail = function(value) {
-      return value.search(/^.+@([a-z0-9]([a-z0-9-]*[a-z0-9])*\.)+[a-z]+$/i) >= 0;
+      return !value.search(/^.+@([a-z\d]([a-z\d-]{0,61}[a-z\d])?\.)+[a-z]+$/i);
     };
     vself.isTimestamp = function(value, format, generalSeparators) {
       return getRegexFromString(format || 'mm/dd/yyyy HH24:MM:SS.MS',
@@ -268,6 +290,67 @@ var formSubmit = new function() {
     };
     vself.isTime = function(value, format, generalSeparators) {
       return vself.isTimestamp(value, format || 'HH24:MM', generalSeparators);
+    };
+    vself.isURL = function(value) {
+      /* Reference: https://tools.ietf.org/html/rfc3986#appendix-A
+      scheme: [a-z][a-z\d\+\.-]*
+      ://
+      userinfo: (([-\w\.~!$&'\(\)\*\+,;=:]|%[\da-f]{2})+@)?
+      ip: ((25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)\.){3}25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d
+      hostname: ([a-z\d]([a-z\d-]{0,61}[a-z\d])?\.)+[a-z]+
+      port: (:(6553[0-5]|655[0-2]\d|65[0-4]\d{2}|6[0-4]\d{3}|[1-5]\d{4}|[1-9]\d{0,3}|\d))?
+      path: (\/(([-!$&'\(\)\*\+,;=\.\w~]|%[\da-f]{2})+\/)*([-!$&'\(\)\*\+,;=\.\w~]|%[\da-f]{2})*)?
+      query: (\?([-\/\?!$&'\(\)\*\+,;=\.\w~]|%[\da-f]{2})*)?
+      hash: (#([-\/\?!$&'\(\)\*\+,;=\.\w~]|%[\da-f]{2})*)?
+        */
+      return !value.search(/^[a-z][a-z\d\+\.-]*:\/\/(([-\w\.~!$&'\(\)\*\+,;=:]|%[\da-f]{2})+@)?(((25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)\.){3}25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d|([a-z\d]([a-z\d-]{0,61}[a-z\d])?\.)+[a-z]+)(:(6553[0-5]|655[0-2]\d|65[0-4]\d{2}|6[0-4]\d{3}|[1-5]\d{4}|[1-9]\d{0,3}|\d))?(\/(([-!$&'\(\)\*\+,;=\.\w~]|%[\da-f]{2})+\/)*([-!$&'\(\)\*\+,;=\.\w~]|%[\da-f]{2})*)?(\?([-\/\?!$&'\(\)\*\+,;=\.\w~]|%[\da-f]{2})*)?(#([-\/\?!$&'\(\)\*\+,;=\.\w~]|%[\da-f]{2})*)?$/i);
+    };
+    vself.isURLHTTP = function(value) {
+      return vself.isURL(value) && !value.search(/^https?:\/\//i);
+    };
+    vself.isURLPath = function(value) {
+      // Path does not start with / by definition
+      return value[0] != '/' && !value.search(/^([-\/!$&'\(\)\*\+,;=\.\w~]|%[\da-f]{2})+(\?([-\/\?!$&'\(\)\*\+,;=\.\w~]|%[\da-f]{2})*)?(#([-\/\?!$&'\(\)\*\+,;=\.\w~]|%[\da-f]{2})*)?$/i);
+    };
+    vself.isHostname = function(value) {
+      return !value.search(/^([a-z\d]([a-z\d-]{0,61}[a-z\d])?\.)+[a-z]+$/i) && value.length < 255;
+    };
+    vself.isDomain = function(value) {
+      return !value.search(/^[a-z\d]([a-z\d-]{0,61}[a-z\d])?\.[a-z]+$/i);
+    };
+    vself.isIPAddress = function(value) {
+      return !(value + '.').search(/^((25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)\.){4}$/);
+    };
+    vself.isSSN = function(value) {
+      return !value.search(/^\d{3}-\d{2}-\d{4}$/);
+    };
+    vself.isABARouting = function(value) {
+      var multipliers = [3, 7, 1],
+          total = 0;
+      if (!vself.isDigits(value, '000000000')) {
+        return false; }
+      // (3 * (d[1] + d[4] + d[7]) + 7 * (d[2] + d[5] + d[8]) + d[3] + d[6] + d[9]) % 10 = 0
+      for (var d, x = 0; d = value[x]; x++) {
+        total += d * multipliers[x % 3]; }
+      return total % 10 == 0;
+    };
+    vself.isCreditCard = function(value) {
+      var multipliers = [2, 1, 2], // One value is ignored
+          total = 0;
+      value = value.replace(/\D/g, '');
+      // Must be digits in groups of at least four with only spaces between, 8-19 length
+      if (value.search(/^(\d{4,}\ )*\d+$/) != 0 || value.length < 8 || value.length > 19) {
+        return false;
+      }
+      // Apply Luhn's algorithm
+      if (value.length % 2) {
+        multipliers.shift(); } // Switch order
+      for (var d, x = 0; d = value[x]; x++) {
+        total += (d *= multipliers[x % 2]) > 9 ? d - 9 : d; }
+      return total % 10 == 0;
+    };
+    vself.isCVV = function(value, format) {
+      return vself.isDigits(value, format || '000');
     };
 
     vself.formatDigits = function(value, format) {
@@ -304,6 +387,13 @@ var formSubmit = new function() {
     };
     vself.formatZip = function(value, format) {
       return vself.formatDigits(value, format || '00000');
+    };
+    vself.formatZipPlus4 = function(value, format) {
+      return vself.formatDigits(value,
+          format || (value.replace(/\D/g, '').length > 5 ? '00000-0000' : '00000'));
+    };
+    vself.formatZipFull = function(value, format) {
+      return vself.formatDigits(value, format || '00000-0000');
     };
     vself.formatTimestamp = function(value, format) {
       var groups, tokens, tokenFormat, hourTwelve,
@@ -410,6 +500,52 @@ var formSubmit = new function() {
     };
     vself.formatTime = function(value, format) {
       return vself.formatTimestamp(value, format || 'HH24:MM');
+    };
+    vself.formatURLHTTP = function(value) {
+      // Replace schemes not http/https with http
+      return value.replace(/^(?!https?:\/\/|$)(((https?)|[a-z][a-z0-9]*)(:\/{0,2}|:?\/{1,2}))?/i,
+          function(m, p1, p2, protocol) { return (protocol || 'http') + '://'; } )
+    };
+    vself.formatURLPath = function(value) {
+      // Remove leading /
+      return value.replace(/^\/+/, '');
+    };
+    vself.formatHostname = function(value) {
+      // Remove scheme, whitelist hostname, then whitelist top level domain
+      return value.replace(/^.*:\/\//, '').replace(/[^a-z\d\.-]/ig, '').replace(/[^a-z\.](?!.*?\.)/ig, '');
+    };
+    vself.formatDomain = function(value) {
+      // Format as hostname then remove subdomains
+      return vself.formatHostname(value).replace(/.*\.(?=.*?\.)/g, '');
+    };
+    vself.formatIPAddress = function(value) {
+      var groups = value.replace(/[^\d\.]/g, '').replace(/(^|\.)0+(?=\d)/g, '.').match(/^[\D]*(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)[\D]*(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)?[\D]*(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)?[\D]*(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)?[\D]*$/);
+      return (groups || []).slice(1).join('.');
+    };
+    vself.formatSSN = function(value, format) {
+      return vself.formatDigits(value, format || '000-00-0000');
+    };
+    vself.formatABARouting = function(value, format) {
+      return vself.formatDigits(value, format || '000000000');
+    };
+    vself.formatCreditCard = function(value, format) {
+      if (!format) {
+        value = value.replace(/\D/g, '');
+        // American Express, Diners Club, UATP, any valid cards under 15 digits
+        if ((['30', '34', '36', '37'].indexOf(value.slice(0, 2)) >= 0 || value[0] == '1' || vself.isCreditCard(value)) && value.length <= 15) {
+          format = '0000 000000 00000';
+        // Cards over 16 digits, no prefixes pre-detected
+        } else if (value.length > 16) {
+          format = '00000000 00000000000'; // 19 max
+        // Default card format
+        } else {
+          format = '0000 0000 0000 0000';
+        }
+      }
+      return vself.formatDigits(value, format);
+    };
+    vself.formatCVV = function(value, format) {
+      return vself.formatDigits(value, format || '000');
     };
 
     var addCommas = function(numStr) {
@@ -536,6 +672,12 @@ var formSubmit = new function() {
     return el.getAttribute('data-form-submit-error-msg') || fallbackErrorMessage;
   };
 
+  var assisterValidate = function(target, validation) {
+    self.addValidationSingleElement(target, function(value, el) {
+      return validation(value) ? '' : assisterGetErrorMessage(el);
+    });
+  };
+
   var assisterValidateAndFormat = function(target, validation, formatter, format) {
     self.addValidationSingleElement(target, function(value, el) {
       if (!validation((el.value = formatter(value, format)), format)) {
@@ -543,10 +685,16 @@ var formSubmit = new function() {
       return '';
     });
   };
-  
+
+  var assisterOptional = function(target, validation) {
+    self.addValidationSingleElement(target, function(value, el) {
+      return !value || validation(value) ? '' : assisterGetErrorMessage(el);
+    });
+  };
+
   var assisterOptionalFormat = function(target, validation, formatter, format) {
     self.addValidationSingleElement(target, function(value, el) {
-      if (!validation((el.value = formatter(value, format)), format) && el.value.length) {
+      if (!validation((el.value = formatter(value, format)), format) && !!el.value) {
         return assisterGetErrorMessage(el); }
       return '';
     });
@@ -569,46 +717,8 @@ var formSubmit = new function() {
         if (placeholder = placeholderValues[attrValue]) {
           assisterSetPlaceholder(el, placeholder); }
         switch (attrValue) {
-          case 'digits':
-            assisterValidateAndFormat(el, self.validation.isDigits,
-                                      self.validation.formatDigits);
-            break;
-          case 'number':
-            assisterValidateAndFormat(el, self.validation.isNumber,
-                                      self.validation.formatNumber);
-            break;
-          case 'currency':
-            assisterValidateAndFormat(el, self.validation.isCurrency,
-                                      self.validation.formatCurrency);
-            break;
-          case 'phone':
-            assisterValidateAndFormat(el, self.validation.isPhone,
-                                      self.validation.formatPhone);
-            break;
-          case 'zip':
-            assisterValidateAndFormat(el, self.validation.isZip,
-                                      self.validation.formatZip);
-            break;
-          case 'email':
-            self.addValidation(el, function(value, el) {
-              return self.validation.isEmail(value) ? '' : assisterGetErrorMessage(el);
-            });
-            break;
-          case 'timestamp':
-            assisterValidateAndFormat(el, self.validation.isTimestamp,
-                                      self.validation.formatTimestamp);
-            break;
-          case 'date-mmddyyyy':
-            assisterValidateAndFormat(el, self.validation.isDate,
-                                      self.validation.formatDate);
-            break;
-          case 'date-yyyymmdd':
-            assisterValidateAndFormat(el, self.validation.isDate,
-                                      self.validation.formatDate, 'yyyy-mm-dd');
-            break;
-          case 'time':
-            assisterValidateAndFormat(el, self.validation.isTime,
-                                      self.validation.formatTime);
+          case 'true':
+            assisterValidate(el, function(value) { return !!value; });
             break;
           case 'radio':
             self.addRadioValidation(el, function(value, el) {
@@ -622,12 +732,97 @@ var formSubmit = new function() {
               return '';
             });
             break;
+          case 'digits':
+            assisterValidateAndFormat(el,
+                self.validation.isDigits, self.validation.formatDigits);
+            break;
+          case 'number':
+            assisterValidateAndFormat(el,
+                self.validation.isNumber, self.validation.formatNumber);
+            break;
+          case 'currency':
+            assisterValidateAndFormat(el,
+                self.validation.isCurrency, self.validation.formatCurrency);
+            break;
+          case 'phone':
+            assisterValidateAndFormat(el,
+                self.validation.isPhone, self.validation.formatPhone);
+            break;
+          case 'zip':
+            assisterValidateAndFormat(el,
+                self.validation.isZip, self.validation.formatZip);
+            break;
+          case 'zip+4':
+            assisterValidateAndFormat(el,
+                self.validation.isZipPlus4, self.validation.formatZipPlus4);
+            break;
+          case 'zip-full':
+            assisterValidateAndFormat(el,
+                self.validation.isZipFull, self.validation.formatZipFull);
+            break;
+          case 'email':
+            assisterValidate(el, self.validation.isEmail);
+            break;
+          case 'url':
+            assisterValidate(el, self.validation.isURL);
+            break;
+          case 'url-http':
+            assisterValidateAndFormat(el,
+                self.validation.isURLHTTP, self.validation.formatURLHTTP);
+            break;
+          case 'url-path':
+            assisterValidateAndFormat(el,
+                self.validation.isURLPath, self.validation.formatURLPath);
+            break;
+          case 'hostname':
+            assisterValidateAndFormat(el,
+                self.validation.isHostname, self.validation.formatHostname);
+            break;
+          case 'domain':
+            assisterValidateAndFormat(el,
+                self.validation.isDomain, self.validation.formatDomain);
+            break;
+          case 'ip-address':
+            assisterValidateAndFormat(el,
+                self.validation.isIPAddress, self.validation.formatIPAddress);
+            break;
+          case 'timestamp':
+            assisterValidateAndFormat(el,
+                self.validation.isTimestamp, self.validation.formatTimestamp);
+            break;
+          case 'date-mmddyyyy':
+            assisterValidateAndFormat(el,
+                self.validation.isDate, self.validation.formatDate);
+            break;
+          case 'date-yyyymmdd':
+            assisterValidateAndFormat(el, self.validation.isDate,
+                self.validation.formatDate, 'yyyy-mm-dd');
+            break;
+          case 'time':
+            assisterValidateAndFormat(el,
+                self.validation.isTime, self.validation.formatTime);
+            break;
+          case 'ssn':
+            assisterValidateAndFormat(el,
+                self.validation.isSSN, self.validation.formatSSN);
+            break;
+          case 'aba-routing':
+            assisterValidateAndFormat(el,
+                self.validation.isABARouting, self.validation.formatABARouting);
+            break;
+          case 'credit-card':
+            assisterValidateAndFormat(el,
+                self.validation.isCreditCard, self.validation.formatCreditCard);
+            break;
+          case 'cvv':
+            assisterValidateAndFormat(el,
+                self.validation.isCVV, self.validation.formatCVV);
+            break;
           case 'false': // The only way to positively indicate no validation
             break;
           default:
-            self.addValidation(el, function(value, el) {
-              return value ? '' : assisterGetErrorMessage(el);
-            });
+            console.log('data-form-submit-required invalid: ' +
+                el.getAttribute('data-form-submit-required'));
         }
       }
     }
@@ -640,51 +835,96 @@ var formSubmit = new function() {
           assisterSetPlaceholder(el, placeholder); }
         switch (attrValue) {
           case 'digits':
-            assisterOptionalFormat(el, self.validation.isDigits,
-                                   self.validation.formatDigits);
+            assisterOptionalFormat(el,
+                self.validation.isDigits, self.validation.formatDigits);
             break;
           case 'number':
-            assisterOptionalFormat(el, self.validation.isNumber,
-                                   self.validation.formatNumber);
+            assisterOptionalFormat(el,
+                self.validation.isNumber, self.validation.formatNumber);
             break;
           case 'currency':
-            assisterOptionalFormat(el, self.validation.isCurrency,
-                                   self.validation.formatCurrency);
+            assisterOptionalFormat(el,
+                self.validation.isCurrency, self.validation.formatCurrency);
             break;
           case 'phone':
-            assisterOptionalFormat(el, self.validation.isPhone,
-                                   self.validation.formatPhone);
+            assisterOptionalFormat(el,
+                self.validation.isPhone, self.validation.formatPhone);
             break;
           case 'zip':
-            assisterOptionalFormat(el, self.validation.isZip,
-                                   self.validation.formatZip);
+            assisterOptionalFormat(el,
+                self.validation.isZip, self.validation.formatZip);
+            break;
+          case 'zip+4':
+            assisterOptionalFormat(el,
+                self.validation.isZipPlus4, self.validation.formatZipPlus4);
+            break;
+          case 'zip-full':
+            assisterOptionalFormat(el,
+                self.validation.isZipFull, self.validation.formatZipFull);
             break;
           case 'email':
-            self.addValidation(el, function(value, el) {
-              return !value || self.validation.isEmail(value) ? '' : assisterGetErrorMessage(el);
-            });
+            assisterOptional(el, self.validation.isEmail);
+            break;
+          case 'url':
+            assisterOptional(el, self.validation.isURL);
+            break;
+          case 'url-http':
+            assisterOptionalFormat(el,
+                self.validation.isURLHTTP, self.validation.formatURLHTTP);
+            break;
+          case 'url-path':
+            assisterOptionalFormat(el,
+                self.validation.isURLPath, self.validation.formatURLPath);
+            break;
+          case 'hostname':
+            assisterOptionalFormat(el,
+                self.validation.isHostname, self.validation.formatHostname);
+            break;
+          case 'domain':
+            assisterOptionalFormat(el,
+                self.validation.isDomain, self.validation.formatDomain);
+            break;
+          case 'ip-address':
+            assisterOptionalFormat(el,
+                self.validation.isIPAddress, self.validation.formatIPAddress);
             break;
           case 'timestamp':
-            assisterOptionalFormat(el, self.validation.isTimestamp,
-                                   self.validation.formatTimestamp);
+            assisterOptionalFormat(el,
+                self.validation.isTimestamp, self.validation.formatTimestamp);
             break;
           case 'date-mmddyyyy':
-            assisterOptionalFormat(el, self.validation.isDate,
-                                   self.validation.formatDate);
+            assisterOptionalFormat(el,
+                self.validation.isDate, self.validation.formatDate);
             break;
           case 'date-yyyymmdd':
             assisterOptionalFormat(el, self.validation.isDate,
-                                   self.validation.formatDate, 'yyyy-mm-dd');
+                self.validation.formatDate, 'yyyy-mm-dd');
             break;
           case 'time':
-            assisterOptionalFormat(el, self.validation.isTime,
-                                   self.validation.formatTime);
+            assisterOptionalFormat(el,
+                self.validation.isTime, self.validation.formatTime);
+            break;
+          case 'ssn':
+            assisterOptionalFormat(el,
+                self.validation.isSSN, self.validation.formatSSN);
+            break;
+          case 'aba-routing':
+            assisterOptionalFormat(el,
+                self.validation.isABARouting, self.validation.formatABARouting);
+            break;
+          case 'credit-card':
+            assisterOptionalFormat(el,
+                self.validation.isCreditCard, self.validation.formatCreditCard);
+            break;
+          case 'cvv':
+            assisterOptionalFormat(el,
+                self.validation.isCVV, self.validation.formatCVV);
             break;
           case 'false': // The only way to positively indicate no assistance
             break;
           default:
             console.log('data-form-submit-optional invalid: ' +
-                        el.getAttribute('data-form-submit-optional'));
+                el.getAttribute('data-form-submit-optional'));
         }
       }
     }

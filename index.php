@@ -97,6 +97,14 @@ input[type="text"], textarea {
         <input type="text" name="zip" data-form-submit-required="zip" data-form-submit-error-msg="Please enter a 5-digit ZIP code" data-form-submit-count="5" />
       </div>
       <div>
+        ZIP code with optional + 4:
+        <input type="text" name="zip-plus-4" data-form-submit-required="zip+4" data-form-submit-error-msg="Please enter a 5- or 9-digit ZIP code" />
+      </div>
+      <div>
+        ZIP code with + 4 required:
+        <input type="text" name="zip-full" data-form-submit-required="zip-full" data-form-submit-error-msg="Please enter a 9-digit ZIP code" />
+      </div>
+      <div>
         Email address:
         <input type="text" name="email" data-form-submit-required="email" data-form-submit-error-msg="Please enter a valid email address" />
       </div>
@@ -185,10 +193,71 @@ input[type="text"], textarea {
       <input type="hidden" name="form-number" value="5" />
     </fieldset>
   </form>
+  <!-- Test: data-form-submit-required="url", data-form-submit-required="url-http", data-form-submit-required="url-part", data-form-submit-required="hostname", data-form-submit-required="domain", data-form-submit-required="ip-address", and data-form-submit-error-msg -->
+  <form action="index.php" method="POST">
+    <fieldset>
+        <legend>Form 6 - Web addresses</legend>
+       <div>
+        URL:
+        <input type="text" name="url" data-form-submit-required="url" data-form-submit-error-msg="Please enter a valid URL" />
+      </div>
+      <div>
+        URL with http/https:
+        <input type="text" name="url-http" data-form-submit-required="url-http" data-form-submit-error-msg="Please enter a valid HTTP URL" />
+      </div>
+      <div>
+        Path portion of URL (after first / after hostname):
+        <input type="text" name="url-path" data-form-submit-required="url-path" data-form-submit-error-msg="Please enter a URL path, the part of the URL after the hostname" />
+      </div>
+      <div>
+        Hostname:
+        <input type="text" name="hostname" data-form-submit-required="hostname" data-form-submit-error-msg="Please enter a valid hostname, ex www.google.com" />
+      </div>
+      <div>
+        Domain:
+        <input type="text" name="domain" data-form-submit-required="domain" data-form-submit-error-msg="Please enter a valid domain, ex google.com" />
+      </div>
+      <div>
+        IP Address:
+        <input type="text" name="ip-address" data-form-submit-required="ip-address" data-form-submit-error-msg="Please enter a valid IP address, ex 192.168.3.14" />
+      </div>
+      <button type="submit">
+        Submit
+      </button>
+      <input type="hidden" name="form-number" value="6" />
+    </fieldset>
+  </form>
+  <!-- Test: data-form-submit-required="url", data-form-submit-required="url-http", data-form-submit-required="url-part", data-form-submit-required="hostname", data-form-submit-required="domain", data-form-submit-required="ip-address", and data-form-submit-error-msg -->
+  <form action="index.php" method="POST">
+    <fieldset>
+        <legend>Form 7 - Sensitive data</legend>
+        <strong>Please only submit fictitious test data</strong>
+       <div>
+        Social security number:
+        <input type="text" name="ssn" data-form-submit-required="ssn" data-form-submit-error-msg="Please enter a valid SSN, ex. 123-45-6789" />
+      </div>
+      <div>
+        ABA routing number (for ACH, found on bottom of checks):
+        <input type="text" name="aba-routing" data-form-submit-required="aba-routing" data-form-submit-error-msg="Please enter a valid ABA routing number, ex. 011000015" />
+      </div>
+      <div>
+        Credit card:
+        <input type="text" name="credit-card" data-form-submit-required="credit-card" data-form-submit-error-msg="Please enter a valid credit card number, ex. 4111 1111 1111 1111" />
+      </div>
+      <div>
+        CVV (on back of credit card):
+        <input type="text" name="cvv" data-form-submit-required="cvv" data-form-submit-error-msg="Please enter a CVV number, ex. 123" />
+      </div>
+      <button type="submit">
+        Submit
+      </button>
+      <input type="hidden" name="form-number" value="7" />
+    </fieldset>
+  </form>
   <!-- Test: data-form-submit-regex, data-form-submit-group, form-submit-error-for, and JavaScript API -->
   <form action="index.php" method="POST">
     <fieldset>
-      <legend>Form 6 - Fanciness</legend>
+      <legend>Form 8 - Fanciness</legend>
       <div>
         Enter a number less than 50:
         <input type="text" name="lessthan50" id="lessthan50" />
@@ -223,7 +292,7 @@ input[type="text"], textarea {
       <button type="submit">
         Submit
       </button>
-      <input type="hidden" name="form-number" value="6" />
+      <input type="hidden" name="form-number" value="8" />
     </fieldset>
   </form>
   <script type="text/javascript">'use strict';
@@ -290,7 +359,7 @@ formSubmit.addValidation(document.getElementById('lessthan50'), function(value, 
   <!-- Test: data-form-submit-optional, data-form-submit-error-msg, and data-form-submit-count -->
   <form action="index.php" method="POST">
     <fieldset>
-      <legend>Form 7 - All optional</legend>
+      <legend>Form 9 - All optional</legend>
       <div>
         Enter one to ten digits:
         <input type="text" name="digits-optional" maxlength="10" data-form-submit-optional="digits" data-form-submit-count="true" />
@@ -331,10 +400,51 @@ formSubmit.addValidation(document.getElementById('lessthan50'), function(value, 
         Time:
         <input type="text" name="time-optional" data-form-submit-optional="time" data-form-submit-error-msg="Invalid time" />
       </div>
+       <div>
+        URL:
+        <input type="text" name="url-optional" data-form-submit-optional="url" data-form-submit-error-msg="Please enter a valid URL" />
+      </div>
+      <div>
+        URL with http/https:
+        <input type="text" name="url-http-optional" data-form-submit-optional="url-http" data-form-submit-error-msg="Please enter a valid HTTP URL" />
+      </div>
+      <div>
+        Path portion of URL (after first / after hostname):
+        <input type="text" name="url-path-optional" data-form-submit-optional="url-path" data-form-submit-error-msg="Please enter a URL path, the part of the URL after the hostname" />
+      </div>
+      <div>
+        Hostname:
+        <input type="text" name="hostname-optional" data-form-submit-optional="hostname" data-form-submit-error-msg="Please enter a valid hostname, ex www.google.com" />
+      </div>
+      <div>
+        Domain:
+        <input type="text" name="domain-optional" data-form-submit-optional="domain" data-form-submit-error-msg="Please enter a valid domain, ex google.com" />
+      </div>
+      <div>
+        IP Address:
+        <input type="text" name="ip-address-optional" data-form-submit-optional="ip-address" data-form-submit-error-msg="Please enter a valid IP address, ex 192.168.3.14" />
+      </div>
+      <strong>Please only submit fictitious test data</strong>
+       <div>
+        Social security number:
+        <input type="text" name="ssn-optional" data-form-submit-optional="ssn" data-form-submit-error-msg="Please enter a valid SSN" />
+      </div>
+      <div>
+        ABA routing number (for ACH, bottom of checks):
+        <input type="text" name="aba-routing-optional" data-form-submit-optional="aba-routing" data-form-submit-error-msg="Please enter a valid ABA routing number, ex. 081501696" />
+      </div>
+      <div>
+        Credit card:
+        <input type="text" name="credit-card-optional" data-form-submit-optional="credit-card" data-form-submit-error-msg="Please enter a valid credit card number, ex 4111 1111 1111 1111" />
+      </div>
+      <div>
+        CVV (on back of credit card):
+        <input type="text" name="cvv-optional" data-form-submit-optional="cvv" data-form-submit-error-msg="Please enter a CVV number" />
+      </div>
       <button type="submit">
         Submit
       </button>
-      <input type="hidden" name="form-number" value="7" />
+      <input type="hidden" name="form-number" value="9" />
     </fieldset>
   </form>
 </body>
