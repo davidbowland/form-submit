@@ -36,14 +36,14 @@ This script supports being loaded `defer`.
       *includes user assistance*
    * `time` - Field requires a time in the format `HH24:MM`  
       *includes user assistance*
-   * `url` - Field requires a URL that conforms to RFC 3986 (<https://tools.ietf.org/html/rfc3986#appendix-A>)
+   * `url` - Field requires a URL that conforms to [RFC 3986](https://tools.ietf.org/html/rfc3986#appendix-A)
    * `url-http` - Field requires a URL using either http or https  
       *includes limited user assistance, adds scheme*
    * `url-path`- Field requires the path portion of a URL (after /)  
       *includes limited user assistance, removes leading /*
-   * `hostname` - Field requires a hostname that conforms to RFC 1035 (<https://www.ietf.org/rfc/rfc1035.txt>), excluding localhost  
+   * `hostname` - Field requires a hostname that conforms to [RFC 1035](https://www.ietf.org/rfc/rfc1035.txt), excluding localhost  
       *includes user assistance*
-   * `domain` - Field requires a domain name that conforms to RFC 1035 (<https://www.ietf.org/rfc/rfc1035.txt>), excluding localhost  
+   * `domain` - Field requires a domain name that conforms to [RFC 1035](https://www.ietf.org/rfc/rfc1035.txt), excluding localhost  
       *includes user assistance*
    * `ip-address` - Field requires an IPv4 address  
       *includes user assistance*
@@ -81,14 +81,14 @@ This script supports being loaded `defer`.
       *includes user assistance*
    * `time` - Field requires a time in the format `HH24:MM`  
       *includes user assistance*
-   * `url` - Field requires a URL that conforms to RFC 3986 (<https://tools.ietf.org/html/rfc3986#appendix-A>)
+   * `url` - Field requires a URL that conforms to [RFC 3986](https://tools.ietf.org/html/rfc3986#appendix-A)
    * `url-http` - Field requires a URL using either http or https  
       *includes limited user assistance, adds scheme*
    * `url-path`- Field requires the path portion of a URL (after /)  
       *includes limited user assistance, removes leading /*
-   * `hostname` - Field requires a hostname that conforms to RFC 1035 (<https://www.ietf.org/rfc/rfc1035.txt>), excluding localhost  
+   * `hostname` - Field requires a hostname that conforms to [RFC 1035](https://www.ietf.org/rfc/rfc1035.txt), excluding localhost  
       *includes user assistance*
-   * `domain` - Field requires a domain name that conforms to RFC 1035 (<https://www.ietf.org/rfc/rfc1035.txt>), excluding localhost  
+   * `domain` - Field requires a domain name that conforms to [RFC 1035](https://www.ietf.org/rfc/rfc1035.txt), excluding localhost  
       *includes user assistance*
    * `ip-address` - Field requires an IPv4 address  
       *includes user assistance*
@@ -270,23 +270,23 @@ This script supports being loaded `defer`.
 
 * `formSubmit.validation.isURL(<value>)`  
    ex: `formSubmit.validation.isURL('https://dbowland.com/')` or `formSubmit.validation.isURL('ftp://dbowland.com/')`
-   * Returns true if the value matches RFC 3986 (https://tools.ietf.org/html/rfc3986#appendix-A), otherwise returns false
+   * Returns true if the value matches [RFC 3986](https://tools.ietf.org/html/rfc3986#appendix-A), otherwise returns false
 
 * `formSubmit.validation.isURLHTTP(<value>)`  
    ex: `formSubmit.validation.isURLHTTP('https://dbowland.com/')`
-   * Returns true if the value matches RFC 3986 (https://tools.ietf.org/html/rfc3986#appendix-A) and uses http or https, otherwise returns false
+   * Returns true if the value matches [RFC 3986](https://tools.ietf.org/html/rfc3986#appendix-A) and uses http or https, otherwise returns false
 
 * `formSubmit.validation.isURLPath(<value>)`  
    ex: `formSubmit.validation.isURLPath('form-submit/')`
-   * Returns true if the value matches RFC 3986 (https://tools.ietf.org/html/rfc3986#appendix-A) for paths, otherwise returns false
+   * Returns true if the value matches [RFC 3986](https://tools.ietf.org/html/rfc3986#appendix-A) for paths, otherwise returns false
 
 * `formSubmit.validation.isHostname(<value>)`  
    ex: `formSubmit.validation.isHostname('www.dowland.com')`
-   * Returns true if the value conforms to RFC 1035 (<https://www.ietf.org/rfc/rfc1035.txt>), excluding localhost  
+   * Returns true if the value conforms to [RFC 1035](https://www.ietf.org/rfc/rfc1035.txt), excluding localhost  
 
 * `formSubmit.validation.isDomain(<value>)`  
    ex: `formSubmit.validation.isHostname('dbowland.com')`
-   * Returns true if the value conforms to RFC 1035 (<https://www.ietf.org/rfc/rfc1035.txt>), excluding localhost  
+   * Returns true if the value conforms to [RFC 1035](https://www.ietf.org/rfc/rfc1035.txt), excluding localhost  
 
 * `formSubmit.validation.isIPAddress(<value>)`  
    ex: `formSubmit.validation.isIPAddress('127.0.0.1')`
