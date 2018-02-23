@@ -341,6 +341,7 @@ formSubmit.addValidation(document.getElementById('lessthan50'), function(value, 
   if (!alphaLeft.length || !alphaRight.length) {
     return 'Please enter a word in both boxes.';
   } else if (alphaLeft.toLowerCase() >= alphaRight.toLowerCase()) {
+    // Injection protection is always enabled
     return '"' + alphaLeft + '" does not come before "' + alphaRight + '" alphabetically.';
   }
   return '';
