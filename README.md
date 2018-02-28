@@ -37,7 +37,7 @@ This script supports being loaded `defer`.
    * `time` - Field requires a time in the format `HH24:MM`  
       *includes user assistance*
    * `url` - Field requires a URL that conforms to [RFC 3986](https://tools.ietf.org/html/rfc3986#appendix-A)
-   * `url-http` - Field requires a URL using either http or https  
+   * `url-http` - Field requires a URL using either http or https and with a valid hostname or IP address (optional port)  
       *includes limited user assistance, adds scheme*
    * `url-path`- Field requires the path portion of a URL (after /)  
       *includes limited user assistance, removes leading /*
@@ -82,7 +82,7 @@ This script supports being loaded `defer`.
    * `time` - Field requires a time in the format `HH24:MM`  
       *includes user assistance*
    * `url` - Field requires a URL that conforms to [RFC 3986](https://tools.ietf.org/html/rfc3986#appendix-A)
-   * `url-http` - Field requires a URL using either http or https  
+   * `url-http` - Field requires a URL using either http or https and with a valid hostname or IP address (optional port)  
       *includes limited user assistance, adds scheme*
    * `url-path`- Field requires the path portion of a URL (after /)  
       *includes limited user assistance, removes leading /*
@@ -274,7 +274,7 @@ This script supports being loaded `defer`.
 
 * `formSubmit.validation.isURLHTTP(<value>)`  
    ex: `formSubmit.validation.isURLHTTP('https://dbowland.com/')`
-   * Returns true if the value matches [RFC 3986](https://tools.ietf.org/html/rfc3986#appendix-A) and uses http or https, otherwise returns false
+   * Returns true if the value matches [RFC 3986](https://tools.ietf.org/html/rfc3986#appendix-A), uses http or https, and has a valid hostname or IP address (optional port), otherwise returns false
 
 * `formSubmit.validation.isURLPath(<value>)`  
    ex: `formSubmit.validation.isURLPath('form-submit/')`
