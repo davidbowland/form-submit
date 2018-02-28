@@ -238,7 +238,7 @@ input[type="text"], textarea {
       </div>
       <div>
         ABA routing number (for ACH, found on bottom of checks):
-        <input type="text" name="aba-routing" data-form-submit-required="aba-routing" data-form-submit-error-msg="Please enter a valid ABA routing number, ex. 011000015" />
+        <input type="text" name="aba-routing" data-form-submit-required="aba-routing" data-form-submit-error-msg="Please enter a valid ABA routing number, ex. 011000015" maxlength="9" data-form-submit-count="true" />
       </div>
       <div>
         Credit card:
@@ -432,7 +432,7 @@ formSubmit.addValidation(document.getElementById('lessthan50'), function(value, 
       </div>
       <div>
         ABA routing number (for ACH, bottom of checks):
-        <input type="text" name="aba-routing-optional" data-form-submit-optional="aba-routing" data-form-submit-error-msg="Please enter a valid ABA routing number, ex. 081501696" />
+        <input type="text" name="aba-routing-optional" data-form-submit-optional="aba-routing" data-form-submit-error-msg="Please enter a valid ABA routing number, ex. 081501696" maxlength="9" data-form-submit-count="true" />
       </div>
       <div>
         Credit card:
