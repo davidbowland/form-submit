@@ -662,9 +662,12 @@ var formSubmit = new function() {
 
   var counterEvent = function(ev) {
     var el = self.getCounterElement(ev.currentTarget),
-        maxcount = ev.currentTarget.getAttribute('data-form-submit-count');
+        maxcount = ev.currentTarget.getAttribute('data-form-submit-count'),
+        newValue = ev.currentTarget.value.slice(0, parseInt(maxcount));
     // Enforce the max length
-    ev.currentTarget.value = ev.currentTarget.value.slice(0, parseInt(maxcount));
+    if (ev.currentTarget.value != newValue) {
+      ev.currentTarget.value = newValue;
+    }
     el.textContent = ev.currentTarget.value.length + '/' + maxcount;
   };
 
