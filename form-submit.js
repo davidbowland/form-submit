@@ -628,7 +628,7 @@ var formSubmit = new function() {
         fields = form.querySelectorAll('[name]'),
         valid = true;
     // If this form is set to always allow then we're done here
-    if (attrPresentNotFalse(ev.currentTarget, 'data-form-submit-always-allow')) {
+    if (attrPresentNotFalse(form, 'data-form-submit-always-allow')) {
       return true; }
     // Validate all fields
     for (var el, msg, x = 0; el = fields[x]; x++) {
