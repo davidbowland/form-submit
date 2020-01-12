@@ -335,7 +335,7 @@ var formSubmit = new function() {
       return total % 10 == 0;
     };
     vself.isCreditCard = function(value) {
-      var multipliers = [2, 1, 2], // One value is ignored
+      var multiplier = 2,
           total = 0;
       value = value.replace(/\D/g, '');
       // Must be digits in groups of at least four with only spaces between, 8-19 length
@@ -344,9 +344,11 @@ var formSubmit = new function() {
       }
       // Apply Luhn's algorithm
       if (value.length % 2) {
-        multipliers.shift(); } // Switch order
+        multiplier = 1; }
       for (var d, x = 0; d = value[x]; x++) {
-        total += (d *= multipliers[x % 2]) > 9 ? d - 9 : d; }
+        total += (d *= multiplier) > 9 ? d - 9 : d;
+        multiplier = multiplier == 2 ? 1 : 2;
+      }
       return total % 10 == 0;
     };
     vself.isCVV = function(value, format) {
