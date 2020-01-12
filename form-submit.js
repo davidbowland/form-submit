@@ -474,14 +474,12 @@ var formSubmit = new function() {
         if (groups = value.match(/(a|p)/i)) { // AM/PM affects 24-hour clock only
           // Add twelve hours for PM
           if (groups[1] == 'p') {
-            hourTwelve = (hourTwelve + 12) % 24 } ;
+            hourTwelve = hourTwelve + 12; }
           replacements['H24'] = hourTwelve.toString();
           replacements['HH24'] = ('0' + replacements['H24']).slice(-2);
         } else {
           replacements['H24'] = replacements['H'];
           replacements['HH24'] = replacements['HH'];
-          replacements['H'] = hourTwelve.toString();
-          replacements['HH'] = ('0' + replacements['H']).slice(-2);
         }
       }
       // Return format string with replacements
