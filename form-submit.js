@@ -618,7 +618,7 @@ var formSubmit = new function() {
   var getUniqueID = function(el) {
     var count = parseInt(el.getAttribute('data-form-submit-id'));
     if (isNaN(count)) {
-      el.setAttribute('data-form-submit-id', (count = validationCount++))
+      el.setAttribute('data-form-submit-id', (count = validationCount++));
     }
     return count;
   };
@@ -705,7 +705,8 @@ var formSubmit = new function() {
 
   var assisterSetPlaceholder = function(el, text) {
     if (el.getAttribute('placeholder') === null) {
-      el.setAttribute('placeholder', text); }
+      el.setAttribute('placeholder', text);
+    }
   };
 
 
