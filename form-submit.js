@@ -62,6 +62,7 @@ var formSubmit = new function() {
 
   self.addValidationSingleElement = function(el, callback) {
     self.removeValidationSingleElement(el);
+    Object.defineProperty(callback, 'form', {value: el.form});
     validationCallbacks[getUniqueID(el)] = callback;
     if (el.tagName.toLowerCase() == 'form') {
       el.addEventListener('submit', fieldValidationEvent);
@@ -132,7 +133,7 @@ var formSubmit = new function() {
     // Invoke the registered callback
     return callback(value, el);
   };
-  
+
   self.isValid = function(el) {
     return !self.getErrorMessage(el);
   };
@@ -602,12 +603,12 @@ var formSubmit = new function() {
   };
 
   var removeFormValidation = function(form) {
-    var el, x;
+    var callback, x;
     if (form) {
       // Only remove event listener if no more fields are being validated
       for (var x in validationCallbacks) {
-        el = validationCallbacks[x];
-        if (el.form == form) {
+        callback = validationCallbacks[x];
+        if (callback.form == form) {
           return; } // This form still has a field being validated
       }
       form.removeEventListener('submit', formValidationEvent);
