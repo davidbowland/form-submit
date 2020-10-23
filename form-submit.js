@@ -602,12 +602,12 @@ var formSubmit = new function() {
   };
 
   var removeFormValidation = function(form) {
-    var el, x;
+    var el;
     if (form) {
       // Only remove event listener if no more fields are being validated
       for (var x in validationCallbacks) {
-        el = validationCallbacks[x];
-        if (el.form == form) {
+        el = getElementByUniqueID(x);
+        if (el && el.form == form) {
           return; } // This form still has a field being validated
       }
       form.removeEventListener('submit', formValidationEvent);
@@ -621,6 +621,10 @@ var formSubmit = new function() {
       el.setAttribute('data-form-submit-id', (count = validationCount++));
     }
     return count;
+  };
+
+  var getElementByUniqueID = function(id) {
+    return document.querySelector('[data-form-submit-id="' + id + '"]')
   };
 
   var formValidationEvent = function(ev) {
